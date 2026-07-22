@@ -6,26 +6,26 @@
 <title>DEPAF — Portal Institucional</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* base papel */
-  --carvao:#171410;
-  --paper:#F2ECDB;
-  --paper-line:#D8CDAE;
-  --surface:#FBF7EC;      /* superfície de card/gráfico — off-white quente, nunca #fff puro */
-  /* acentos PCBA — mesma família, mais saturação */
-  --tinta:#14507A;        --tinta-glow:rgba(20,80,122,.14);
-  --mostarda:#E3A424;     --mostarda-glow:rgba(227,164,36,.18);
-  --terracota:#C0492B;    --terracota-glow:rgba(192,73,43,.14);
-  --oliva:#3D7A50;        --oliva-glow:rgba(61,122,80,.14);
-  --dourado:#C9A96E;      --dourado-glow:rgba(201,169,110,.20);
-  --vinho:#7A2E3F;        --vinho-glow:rgba(122,46,63,.14);
+  /* base escura */
+  --carvao:#E9EDF4;
+  --paper:#0B0E14;
+  --paper-line:#1C2230;
+  --surface:#10141D;      /* superfície de card/gráfico — quase preto, nunca #000 puro */
+  /* acentos PCBA — mesma família, agora em neon */
+  --tinta:#22D3EE;        --tinta-glow:rgba(34,211,238,.16);
+  --mostarda:#EAB308;     --mostarda-glow:rgba(234,179,8,.18);
+  --terracota:#FB7185;    --terracota-glow:rgba(251,113,133,.16);
+  --oliva:#34D399;        --oliva-glow:rgba(52,211,153,.16);
+  --dourado:#A78BFA;      --dourado-glow:rgba(167,139,250,.18);
+  --vinho:#EC4899;        --vinho-glow:rgba(236,72,153,.16);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',sans-serif;line-height:1.5;overflow-x:hidden}
-.font-display{font-family:'Big Shoulders Display',sans-serif;text-transform:uppercase}
+.font-display{font-family:'Space Grotesk',sans-serif;text-transform:uppercase}
 .font-mono{font-family:'IBM Plex Mono',monospace}
 
 .grid-bg{
@@ -41,7 +41,7 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 .topbar .brand{display:flex;align-items:center;gap:12px;cursor:pointer}
 .topbar .brand svg{width:28px;height:28px;color:var(--carvao)}
 .topbar .brand-text{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em}
-.topbar .brand-text b{font-family:'Big Shoulders Display',sans-serif;font-size:17px;display:block}
+.topbar .brand-text b{font-family:'Space Grotesk',sans-serif;font-size:17px;display:block}
 .topbar .voltar{
   font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.06em;
   background:var(--carvao);color:var(--paper);border:none;padding:8px 14px;cursor:pointer;display:none;
@@ -52,13 +52,13 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 #tela-inicio{padding:56px 24px 40px;max-width:1100px;margin:0 auto}
 .intro{max-width:680px;margin:0 auto 8px;text-align:center}
 .intro .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.16em;color:var(--terracota);margin-bottom:12px}
-.intro h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(34px,6vw,56px);line-height:0.95}
-.intro p{margin-top:16px;color:#40392f;font-size:15.5px}
+.intro h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,6vw,56px);line-height:0.95}
+.intro p{margin-top:16px;color:#C7CDD9;font-size:15.5px}
 
 /* ---------- hub / rosa dos ventos ---------- */
 .hub-container{display:flex;justify-content:center;margin:44px auto 8px}
 .hub{position:relative;width:min(640px,92vw);aspect-ratio:1/1}
-.hub svg.rings{position:absolute;inset:0;width:100%;height:100%;color:#b8ae95}
+.hub svg.rings{position:absolute;inset:0;width:100%;height:100%;color:#33415C}
 .hub-brasao{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   width:15%;color:var(--carvao);
@@ -69,20 +69,21 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
   width:112px;text-align:center;cursor:pointer;
 }
 .hub-node .dot{
-  width:46px;height:46px;margin:0 auto 8px;border:2.5px solid var(--carvao);background:var(--paper);
+  width:46px;height:46px;margin:0 auto 8px;border:1.5px solid var(--node-color,var(--carvao));background:var(--surface);
+  border-radius:50%;
   display:flex;align-items:center;justify-content:center;color:var(--node-color,var(--carvao));
-  transition:background 0.2s ease,color 0.2s ease,transform 0.2s ease;
+  transition:background 0.2s ease,color 0.2s ease,transform 0.2s ease,box-shadow 0.2s ease;
 }
-.hub-node .dot svg{width:24px;height:24px}
-.hub-node:hover .dot{background:var(--node-color,var(--carvao));color:#fff;transform:scale(1.08)}
-.hub-node .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.04em;line-height:1.2}
+.hub-node .dot svg{width:22px;height:22px}
+.hub-node:hover .dot{background:var(--node-color,var(--carvao));color:var(--paper);transform:scale(1.1)}
+.hub-node .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;line-height:1.2;color:var(--carvao);opacity:.75}
 
 .direcao-card{
-  max-width:420px;margin:36px auto 0;background:#fff;border:2px solid var(--carvao);padding:18px 20px;text-align:left;
+  max-width:420px;margin:36px auto 0;	background:var(--surface);border:2px solid var(--carvao);padding:18px 20px;text-align:left;
 }
 .direcao-card .card-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--terracota);margin-bottom:6px}
-.direcao-card h3{font-family:'Big Shoulders Display',sans-serif;font-size:19px}
-.direcao-card p{font-size:13px;color:#6b6353;margin-top:4px}
+.direcao-card h3{font-family:'Space Grotesk',sans-serif;font-size:19px}
+.direcao-card p{font-size:13px;color:#9AA3B2;margin-top:4px}
 
 /* ---------- telas dedicadas ---------- */
 .tela{padding:48px 24px 64px;max-width:900px;margin:0 auto}
@@ -90,35 +91,35 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 .tela-head{display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--carvao);padding-bottom:16px;margin-bottom:28px}
 .tela-head .icon-grande{width:46px;height:46px;color:var(--tela-color,var(--carvao))}
 .tela-head .icon-grande svg{width:100%;height:100%}
-.tela-head h2{font-family:'Big Shoulders Display',sans-serif;font-size:clamp(28px,5vw,42px)}
-.tela-head .artigos{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6353;margin-top:2px}
-.tela-intro{max-width:64ch;color:#40392f;margin-bottom:30px;font-size:15.5px}
+.tela-head h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,5vw,42px)}
+.tela-head .artigos{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9AA3B2;margin-top:2px}
+.tela-intro{max-width:64ch;color:#C7CDD9;margin-bottom:30px;font-size:15.5px}
 
 .dados-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--carvao);border:2px solid var(--carvao)}
 @media (max-width:640px){.dados-grid{grid-template-columns:1fr}}
-.dado{background:#fff;padding:18px}
-.dado .valor{font-family:'Big Shoulders Display',sans-serif;font-size:26px;line-height:1}
-.dado .rotulo{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6353;margin-top:8px}
+.dado{	background:var(--surface);padding:18px}
+.dado .valor{font-family:'Space Grotesk',sans-serif;font-size:26px;line-height:1}
+.dado .rotulo{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9AA3B2;margin-top:8px}
 .tag{
   display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.08em;
   padding:3px 7px;margin-top:8px;
 }
-.tag-exemplo{background:var(--mostarda);color:#2a2205}
-.tag-pendente{border:1.5px dashed #b8ae95;color:#8a8272;background:none}
+.tag-exemplo{background:var(--mostarda);color:#10141D}
+.tag-pendente{border:1.5px dashed #33415C;color:#6B7280;background:none}
 
 /* ---------- dashboard ---------- */
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2px;background:var(--carvao);border:2px solid var(--carvao);margin-bottom:16px}
-.kpi-card{background:#fff;padding:16px 18px}
-.kpi-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:#6b6353;text-transform:uppercase}
-.kpi-value{font-family:'Big Shoulders Display',sans-serif;font-size:30px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi-card{	background:var(--surface);padding:16px 18px}
+.kpi-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:#9AA3B2;text-transform:uppercase}
+.kpi-value{font-family:'Space Grotesk',sans-serif;font-size:30px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
 .kpi-delta{display:inline-flex;align-items:center;gap:3px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;margin-top:8px;padding:2px 6px}
-.kpi-delta.up{background:#e8f0e2;color:var(--oliva)}
-.kpi-delta.down{background:#f5e6e2;color:var(--terracota)}
-.kpi-delta.flat{background:var(--paper-line);color:#6b6353}
+.kpi-delta.up{background:rgba(52,211,153,.14);color:var(--oliva)}
+.kpi-delta.down{background:rgba(251,113,133,.14);color:var(--terracota)}
+.kpi-delta.flat{background:var(--paper-line);color:#9AA3B2}
 .kpi-spark{width:100%;height:26px;margin-top:10px;display:block}
 .kpi-spark path{fill:none;stroke-width:1.6}
 .chart-grid line{stroke:var(--paper-line);stroke-width:1;stroke-dasharray:2 4}
-.chart-axis-label{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:#8a8272}
+.chart-axis-label{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:#6B7280}
 
 /* ---------- assinatura visual: fita, glow, movimento ---------- */
 .tela-head{position:relative;overflow:hidden}
@@ -137,9 +138,9 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 .kpi-value{position:relative}
 .dash-chart-box h4{position:relative;padding-left:12px}
 .dash-chart-box h4::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;background:var(--tela-color,var(--carvao))}
-.hub-node .dot{box-shadow:0 0 0 0 transparent;border-color:var(--node-color,var(--carvao));color:var(--node-color,var(--carvao))}
-.hub-node:hover .dot{box-shadow:0 0 0 6px var(--node-glow,rgba(0,0,0,.08))}
-.hub .cardeal{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;fill:#8a7f5f}
+.hub-node .dot{box-shadow:0 0 14px -2px var(--node-glow,transparent);border-color:var(--node-color,var(--carvao));color:var(--node-color,var(--carvao))}
+.hub-node:hover .dot{box-shadow:0 0 0 8px var(--node-glow,rgba(255,255,255,.06))}
+.hub .cardeal{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;fill:#5B6472}
 @keyframes girar-anel{to{stroke-dashoffset:-240}}
 .hub .anel-vivo{animation:girar-anel 24s linear infinite}
 .filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;min-height:0}
@@ -148,17 +149,17 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 .filter-chip button:hover{opacity:1}
 
 /* ---------- projetos ---------- */
-.projeto-card{background:#fff;border:2px solid var(--carvao);padding:20px;margin-bottom:2px}
+.projeto-card{	background:var(--surface);border:2px solid var(--carvao);padding:20px;margin-bottom:2px}
 .projeto-card .top{display:flex;gap:14px;align-items:flex-start}
 .projeto-card .icon{width:36px;height:36px;color:var(--carvao);flex:none}
 .projeto-card .icon svg{width:100%;height:100%}
-.projeto-card h3{font-family:'Big Shoulders Display',sans-serif;font-size:20px}
-.projeto-card p.texto{font-size:14px;color:#40392f;margin-top:4px}
+.projeto-card h3{font-family:'Space Grotesk',sans-serif;font-size:20px}
+.projeto-card p.texto{font-size:14px;color:#C7CDD9;margin-top:4px}
 .progress-row{display:flex;align-items:center;gap:10px;margin-top:14px}
 .progress-track{flex:1;height:8px;background:var(--paper-line);position:relative}
 .progress-fill{height:100%;background:var(--terracota)}
 .progress-label{font-family:'IBM Plex Mono',monospace;font-size:11px;white-space:nowrap}
-.equipe{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6353;margin-top:14px;border-top:1px solid var(--paper-line);padding-top:10px}
+.equipe{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9AA3B2;margin-top:14px;border-top:1px solid var(--paper-line);padding-top:10px}
 .equipe span{display:block}
 
 .tabs{display:flex;gap:2px;margin-bottom:0;border-bottom:3px solid var(--carvao)}
@@ -167,26 +168,26 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
   background:var(--paper-line);color:var(--carvao);border:2px solid var(--carvao);border-bottom:none;
   padding:10px 18px;cursor:pointer;position:relative;top:3px;
 }
-.tab-btn.active{background:#fff;top:0;padding-bottom:13px;font-weight:600}
+.tab-btn.active{	background:var(--surface);top:0;padding-bottom:13px;font-weight:600}
 .tab-panel{padding-top:26px}
 .tab-panel[hidden]{display:none}
 
-.dash-filtros{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;background:#fff;border:2px solid var(--carvao);padding:14px 16px}
+.dash-filtros{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;	background:var(--surface);border:2px solid var(--carvao);padding:14px 16px}
 .dash-filtro{display:flex;flex-direction:column;gap:4px}
-.dash-filtro label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#6b6353}
+.dash-filtro label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#9AA3B2}
 .dash-filtro select{
   font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:6px 8px;border:2px solid var(--carvao);background:var(--paper);color:var(--carvao);
 }
 
 .dash-charts{display:grid;grid-template-columns:1.3fr 1fr;gap:2px;background:var(--carvao);border:2px solid var(--carvao);margin-bottom:2px}
 @media (max-width:760px){.dash-charts{grid-template-columns:1fr}}
-.dash-chart-box{background:#fff;padding:18px}
-.dash-chart-box h4{font-family:'Big Shoulders Display',sans-serif;font-size:16px;margin-bottom:12px}
+.dash-chart-box{	background:var(--surface);padding:18px}
+.dash-chart-box h4{font-family:'Space Grotesk',sans-serif;font-size:16px;margin-bottom:12px}
 .dash-chart-box svg{width:100%;height:auto;display:block}
 
-.dash-tabela{width:100%;border-collapse:collapse;background:#fff;border:2px solid var(--carvao)}
+.dash-tabela{width:100%;border-collapse:collapse;	background:var(--surface);border:2px solid var(--carvao)}
 .dash-tabela th,.dash-tabela td{border:1px solid var(--paper-line);padding:8px 10px;font-size:13px;text-align:left}
-.dash-tabela th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.06em;background:var(--paper);color:#6b6353}
+.dash-tabela th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.06em;background:var(--paper);color:#9AA3B2}
 .dash-tabela td.num{font-family:'IBM Plex Mono',monospace;text-align:right}
 .dash-tabela tr.dim{opacity:0.35}
 .dash-tabela tr[data-cat]{cursor:pointer}
@@ -217,7 +218,7 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 .donut-leg:hover{background:var(--paper-line)}
 .donut-leg .sw{width:11px;height:11px;flex:none;border:1px solid var(--carvao)}
 .donut-leg .lg-nome{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.donut-leg .lg-pct{font-variant-numeric:tabular-nums;color:#6b6353}
+.donut-leg .lg-pct{font-variant-numeric:tabular-nums;color:#9AA3B2}
 .kpi-card:nth-child(1){--kpi-cor:var(--tela-color,var(--tinta))}
 .kpi-card:nth-child(2){--kpi-cor:var(--dourado)}
 .kpi-card:nth-child(3){--kpi-cor:var(--oliva)}
@@ -230,7 +231,7 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 footer{border-top:3px solid var(--carvao);padding:30px 24px;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
 footer .selo{width:58px;height:58px;color:var(--carvao)}
 footer .selo svg{width:100%;height:100%}
-footer .nota{font-family:'IBM Plex Mono',monospace;font-size:11px;max-width:44ch;color:#6b6353}
+footer .nota{font-family:'IBM Plex Mono',monospace;font-size:11px;max-width:44ch;color:#9AA3B2}
 </style>
 </head>
 <body>
@@ -262,7 +263,7 @@ footer .nota{font-family:'IBM Plex Mono',monospace;font-size:11px;max-width:44ch
 <footer>
   <div style="display:flex;align-items:center;gap:16px">
     <span class="selo" id="footer-selo"></span>
-    <span class="font-mono" style="font-size:11px;color:#6b6353">DEPAF · POLÍCIA CIVIL DA BAHIA<br>DOSSIÊ INTERNO — USO ADMINISTRATIVO</span>
+    <span class="font-mono" style="font-size:11px;color:#9AA3B2">DEPAF · POLÍCIA CIVIL DA BAHIA<br>DOSSIÊ INTERNO — USO ADMINISTRATIVO</span>
   </div>
   <p class="nota">Brasão em interpretação de linha técnica, não reprodução oficial. Dados marcados "EXEMPLO" são fictícios e devem ser substituídos pelos números reais. Validar uso institucional antes de circulação externa.</p>
 </footer>
@@ -366,7 +367,7 @@ function barChartSVG(pontos, cor) {
     // fio de luz no topo da barra — leitura de "medição", não decoração
     bars += `<line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x + bwReal).toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--paper)" stroke-width="1" opacity="0.55" />`;
     if (ultimo) bars += `<rect x="${x.toFixed(1)}" y="${(y - 4).toFixed(1)}" width="${bwReal.toFixed(1)}" height="4" fill="var(--carvao)" />`;
-    bars += `<text x="${(x + bwReal / 2).toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#8a8272"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
+    bars += `<text x="${(x + bwReal / 2).toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#6B7280"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
     const labelY = Math.max(y - 7, 12);
     bars += `<text x="${(x + bwReal / 2).toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="${ultimo ? "10.5" : "9"}" font-weight="${ultimo ? "700" : "400"}" fill="var(--carvao)">${p.valor}</text>`;
   });
@@ -398,7 +399,7 @@ function lineChartSVG(pontos, cor) {
     if (i === 0) x0 = x;
     xN = x;
     dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${ultimo ? 5 : 3.2}" fill="${ultimo ? "var(--carvao)" : cor}" stroke="var(--carvao)" stroke-width="1.5"><title>${p.label}: ${p.valor}</title></circle>`;
-    labels += `<text x="${x.toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#8a8272"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
+    labels += `<text x="${x.toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#6B7280"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
     if (ultimo) {
       const boxY = Math.max(y - 26, 4);
       labels += `<g><rect x="${(x - 26).toFixed(1)}" y="${boxY.toFixed(1)}" width="52" height="16" fill="var(--carvao)" /><text x="${x.toFixed(1)}" y="${(boxY + 11.5).toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="var(--paper)">${p.valor}</text></g>`;
@@ -431,7 +432,7 @@ function rankingChartSVG(categorias, selectedLabel) {
       <text x="${padL}" y="${y + rowH * 0.62}" font-family="monospace" font-size="10.5" font-weight="${sel ? "700" : "400"}" fill="var(--carvao)">${nomeCurto}</text>
       <rect x="${labelW}" y="${y + 4}" width="${barMaxW}" height="${rowH - 12}" fill="${corGlow(cor)}" stroke="none" />
       <rect class="barra" x="${labelW}" y="${y + 4}" width="${barW.toFixed(1)}" height="${rowH - 12}" fill="${cor}" stroke="var(--carvao)" stroke-width="${sel ? 2.5 : 1.2}" opacity="${selectedLabel && !sel ? 0.3 : 1}" />
-      <text x="${labelW + barMaxW + 6}" y="${y + rowH * 0.62}" font-family="monospace" font-size="10" font-weight="${sel ? "700" : "400"}" fill="var(--carvao)">${c.valor} <tspan fill="#8a8272" font-size="8.5">${pctRk}%</tspan></text>
+      <text x="${labelW + barMaxW + 6}" y="${y + rowH * 0.62}" font-family="monospace" font-size="10" font-weight="${sel ? "700" : "400"}" fill="var(--carvao)">${c.valor} <tspan fill="#6B7280" font-size="8.5">${pctRk}%</tspan></text>
     </g>`;
   });
   return `<svg viewBox="0 0 ${w} ${h}" width="100%" xmlns="http://www.w3.org/2000/svg">${rows}</svg>`;
@@ -446,7 +447,7 @@ function donutChartSVG(categorias, selectedLabel) {
   let ticks = "";
   for (let d = 0; d < 360; d += 30) {
     const rad = (d * Math.PI) / 180;
-    ticks += `<line x1="${(cx + 84 * Math.cos(rad)).toFixed(1)}" y1="${(cy + 84 * Math.sin(rad)).toFixed(1)}" x2="${(cx + 88 * Math.cos(rad)).toFixed(1)}" y2="${(cy + 88 * Math.sin(rad)).toFixed(1)}" stroke="#b8ae95" stroke-width="1"/>`;
+    ticks += `<line x1="${(cx + 84 * Math.cos(rad)).toFixed(1)}" y1="${(cy + 84 * Math.sin(rad)).toFixed(1)}" x2="${(cx + 88 * Math.cos(rad)).toFixed(1)}" y2="${(cy + 88 * Math.sin(rad)).toFixed(1)}" stroke="#33415C" stroke-width="1"/>`;
   }
   categorias.forEach((c, i) => {
     const frac = c.valor / total;
@@ -467,8 +468,8 @@ function donutChartSVG(categorias, selectedLabel) {
   const catSel = categorias.find(c => c.label === selectedLabel);
   const totalLabel = catSel ? catSel.valor : total;
   const svg = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7">${ticks}</g>${fatias}
-    <text x="${cx}" y="${cy - 2}" text-anchor="middle" font-family="'Big Shoulders Display',monospace" font-size="26" font-weight="800" fill="var(--carvao)">${totalLabel}</text>
-    <text x="${cx}" y="${cy + 13}" text-anchor="middle" font-family="monospace" font-size="7.5" letter-spacing="1.5" fill="#6b6353">${catSel ? "SELECIONADO" : "TOTAL"}</text>
+    <text x="${cx}" y="${cy - 2}" text-anchor="middle" font-family="'Space Grotesk',monospace" font-size="26" font-weight="800" fill="var(--carvao)">${totalLabel}</text>
+    <text x="${cx}" y="${cy + 13}" text-anchor="middle" font-family="monospace" font-size="7.5" letter-spacing="1.5" fill="#9AA3B2">${catSel ? "SELECIONADO" : "TOTAL"}</text>
   </svg>`;
   // legenda nomeada — cada categoria com sua cor própria (regra do DNA)
   const leg = categorias.map((c, i) => {
