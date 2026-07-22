@@ -342,146 +342,134 @@ function hatchDefs(id, cor) {
 }
 
 function barChartSVG(pontos, cor) {
-  const w = 520, h = 220, padL = 36, padB = 26, padT = 28, padR = 10;
+  const w = 280, h = 280, cx = w / 2, cy = h / 2, rMax = 96, rMin = 22;
+  const n = pontos.length || 1;
   const max = Math.max(...pontos.map(p => p.valor), 1);
-  const bw = (w - padL - padR) / pontos.length;
-  
-  let grid = `<g class="chart-grid">`;
-  for(let gy=1; gy<=3; gy++){
-    const yy = padT + ((h-padT-padB)/4)*gy;
-    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${w-padR}" y2="${yy.toFixed(1)}"/>`;
-  }
-  grid += `</g>`;
+  const glow = corGlow(cor);
+  const angFor = i => -90 + (360 / n) * i;
+  const toXY = (ang, r) => { const rad = ang * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; };
 
-  const defs = hatchDefs("hatch-bar", cor);
-  let bars = "";
-  pontos.forEach((p, i) => {
-    const bh = ((h - padT - padB) * p.valor) / max;
-    const x = padL + i * bw + bw * 0.18;
-    const y = h - padB - bh;
-    const bwReal = bw * 0.64;
-    const ultimo = i === pontos.length - 1;
-    // trilha fantasma com hachura: mostra o teto da série sem virar bloco chapado
-    bars += `<rect x="${x.toFixed(1)}" y="${padT}" width="${bwReal.toFixed(1)}" height="${(h - padT - padB).toFixed(1)}" fill="url(#hatch-bar)" />`;
-    bars += `<rect class="barra" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bwReal.toFixed(1)}" height="${bh.toFixed(1)}" fill="${cor}" stroke="var(--carvao)" stroke-width="${ultimo ? 2.2 : 1.4}"><title>${p.label}: ${p.valor}</title></rect>`;
-    // fio de luz no topo da barra — leitura de "medição", não decoração
-    bars += `<line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x + bwReal).toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--paper)" stroke-width="1" opacity="0.55" />`;
-    if (ultimo) bars += `<rect x="${x.toFixed(1)}" y="${(y - 4).toFixed(1)}" width="${bwReal.toFixed(1)}" height="4" fill="var(--carvao)" />`;
-    bars += `<text x="${(x + bwReal / 2).toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#6B7280"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
-    const labelY = Math.max(y - 7, 12);
-    bars += `<text x="${(x + bwReal / 2).toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="${ultimo ? "10.5" : "9"}" font-weight="${ultimo ? "700" : "400"}" fill="var(--carvao)">${p.valor}</text>`;
+  let aneis = "";
+  [0.25, 0.5, 0.75, 1].forEach(f => {
+    aneis += `<circle cx="${cx}" cy="${cy}" r="${(rMin + (rMax - rMin) * f).toFixed(1)}" fill="none" stroke="var(--paper-line)" stroke-width="1" stroke-dasharray="${f === 1 ? "0" : "2 4"}" />`;
   });
-  bars += `<line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="var(--carvao)" stroke-width="2" />`;
 
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" xmlns="http://www.w3.org/2000/svg">${defs}${grid}${bars}</svg>`;
+  let eixos = "", labels = "", dots = "";
+  const pathPts = [];
+  pontos.forEach((p, i) => {
+    const ang = angFor(i);
+    const [xA, yA] = toXY(ang, rMin), [xB, yB] = toXY(ang, rMax);
+    eixos += `<line x1="${xA.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${xB.toFixed(1)}" y2="${yB.toFixed(1)}" stroke="var(--paper-line)" stroke-width="1" />`;
+    const [lx, ly] = toXY(ang, rMax + 14);
+    const ultimo = i === pontos.length - 1;
+    labels += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="monospace" font-size="9" font-weight="${ultimo ? 700 : 400}" fill="var(--carvao)" fill-opacity="${ultimo ? 1 : 0.55}">${p.label}</text>`;
+    const r = rMin + (rMax - rMin) * (p.valor / max);
+    const [px, py] = toXY(ang, r);
+    pathPts.push([px, py]);
+    dots += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${ultimo ? 4.5 : 3}" fill="${ultimo ? cor : "var(--surface)"}" stroke="${cor}" stroke-width="1.6"><title>${p.label}: ${p.valor}</title></circle>`;
+  });
+  const poly = "M " + pathPts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(" L ") + " Z";
+  const total = pontos.reduce((a, p) => a + p.valor, 0);
+
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${aneis}${eixos}<path d="${poly}" fill="${glow}" stroke="${cor}" stroke-width="2.2" stroke-linejoin="round" />${dots}${labels}<circle cx="${cx}" cy="${cy}" r="${rMin - 5}" fill="var(--surface)" stroke="var(--paper-line)" stroke-width="1" /><text x="${cx}" y="${cy - 3}" text-anchor="middle" font-family="'Space Grotesk',monospace" font-size="19" font-weight="700" fill="var(--carvao)">${total}</text><text x="${cx}" y="${(cy + 11).toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="6.5" letter-spacing="1.5" fill="var(--carvao)" fill-opacity="0.55">ACUMULADO</text></svg>`;
 }
 
 function lineChartSVG(pontos, cor) {
-  const w = 520, h = 220, padL = 36, padB = 26, padT = 28, padR = 10;
-  const max = Math.max(...pontos.map(p => p.valor), 1);
-  const stepX = (w - padL - padR) / (pontos.length - 1 || 1);
-  
-  let grid = `<g class="chart-grid">`;
-  for(let gy=1; gy<=3; gy++){
-    const yy = padT + ((h-padT-padB)/4)*gy;
-    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${w-padR}" y2="${yy.toFixed(1)}"/>`;
-  }
-  grid += `</g>`;
+  const w = 520, h = 200, padL = 30, padR = 30, baseY = h - 34;
+  const n = pontos.length;
+  const stepX = (w - padL - padR) / (n - 1 || 1);
+  const maxDelta = Math.max(...pontos.slice(1).map((p, i) => Math.abs(p.valor - pontos[i].valor)), 1);
 
-  const glow = corGlow(cor);
-  let path = "", area = "", dots = "", labels = "";
-  let x0 = padL, xN = padL;
+  let baseline = `<line x1="${padL}" y1="${baseY}" x2="${w - padR}" y2="${baseY}" stroke="var(--paper-line)" stroke-width="1.5" />`;
+  let arcos = "", nodos = "", labels = "";
+
   pontos.forEach((p, i) => {
     const x = padL + i * stepX;
-    const y = h - padB - ((h - padT - padB) * p.valor) / max;
-    const ultimo = i === pontos.length - 1;
-    path += (i === 0 ? "M" : "L") + x.toFixed(1) + " " + y.toFixed(1) + " ";
-    if (i === 0) x0 = x;
-    xN = x;
-    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${ultimo ? 5 : 3.2}" fill="${ultimo ? "var(--carvao)" : cor}" stroke="var(--carvao)" stroke-width="1.5"><title>${p.label}: ${p.valor}</title></circle>`;
-    labels += `<text x="${x.toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#6B7280"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
-    if (ultimo) {
-      const boxY = Math.max(y - 26, 4);
-      labels += `<g><rect x="${(x - 26).toFixed(1)}" y="${boxY.toFixed(1)}" width="52" height="16" fill="var(--carvao)" /><text x="${x.toFixed(1)}" y="${(boxY + 11.5).toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="var(--paper)">${p.valor}</text></g>`;
-    } else {
-      const labelY = Math.max(y - 8, 12);
-      labels += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--carvao)">${p.valor}</text>`;
+    const ultimo = i === n - 1;
+    nodos += `<circle cx="${x.toFixed(1)}" cy="${baseY}" r="${ultimo ? 5 : 3.4}" fill="${ultimo ? cor : "var(--surface)"}" stroke="${cor}" stroke-width="1.6"><title>${p.label}: ${p.valor}</title></circle>`;
+    labels += `<text x="${x.toFixed(1)}" y="${baseY + 18}" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--carvao)" fill-opacity="${ultimo ? 1 : 0.55}" font-weight="${ultimo ? 700 : 400}">${p.label}</text>`;
+    if (i > 0) {
+      const xPrev = padL + (i - 1) * stepX;
+      const delta = p.valor - pontos[i - 1].valor;
+      const altura = 16 + (Math.abs(delta) / maxDelta) * 96;
+      const corArco = delta >= 0 ? "var(--oliva)" : "var(--terracota)";
+      const midX = (xPrev + x) / 2;
+      arcos += `<path d="M ${xPrev.toFixed(1)} ${baseY} Q ${midX.toFixed(1)} ${(baseY - altura).toFixed(1)} ${x.toFixed(1)} ${baseY}" fill="none" stroke="${corArco}" stroke-width="${(1.6 + (Math.abs(delta) / maxDelta) * 2.4).toFixed(1)}" opacity="0.85"><title>${pontos[i - 1].label} → ${p.label}: ${delta >= 0 ? "+" : ""}${delta}</title></path>`;
     }
   });
-  area = `<path d="${path}L ${xN.toFixed(1)} ${h - padB} L ${x0.toFixed(1)} ${h - padB} Z" fill="${glow}" stroke="none" />`;
 
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" xmlns="http://www.w3.org/2000/svg">${grid}${area}<path d="${path}" fill="none" stroke="${cor}" stroke-width="2.4" />${dots}<line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="var(--carvao)" stroke-width="2" />${labels}</svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${baseline}${arcos}${nodos}${labels}</svg>`;
 }
 
 function rankingChartSVG(categorias, selectedLabel) {
-  const w = 300, rowH = 30, padL = 8, padR = 46, labelW = 118;
-  const max = Math.max(...categorias.map(c => c.valor), 1);
-  const h = categorias.length * rowH + 10;
-  let rows = "";
+  const w = 300, h = 300, cx = w / 2, cy = h / 2, r = 108;
+  const n = categorias.length;
+  const total = categorias.reduce((a, c) => a + c.valor, 0) || 1;
+  const angFor = i => -90 + (360 / n) * i;
+  const toXY = ang => { const rad = ang * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; };
+
+  let chords = "", nodos = "", labels = "";
   categorias.forEach((c, i) => {
-    const y = 8 + i * rowH;
-    const barMaxW = w - labelW - padR;
-    const barW = Math.max((barMaxW * c.valor) / max, 2);
     const cor = corCategoria(i);
-    const sel = selectedLabel === c.label;
-    const nomeCurto = c.label.length > 20 ? c.label.slice(0, 19) + "…" : c.label;
-    const totalRk = categorias.reduce((a, cc) => a + cc.valor, 0) || 1;
-    const pctRk = ((c.valor / totalRk) * 100).toFixed(0);
-    rows += `<g class="rank-bar" data-cat="${c.label}" style="cursor:pointer">
-      <title>${c.label}: ${c.valor} (${pctRk}%)</title>
-      <text x="${padL}" y="${y + rowH * 0.62}" font-family="monospace" font-size="10.5" font-weight="${sel ? "700" : "400"}" fill="var(--carvao)">${nomeCurto}</text>
-      <rect x="${labelW}" y="${y + 4}" width="${barMaxW}" height="${rowH - 12}" fill="${corGlow(cor)}" stroke="none" />
-      <rect class="barra" x="${labelW}" y="${y + 4}" width="${barW.toFixed(1)}" height="${rowH - 12}" fill="${cor}" stroke="var(--carvao)" stroke-width="${sel ? 2.5 : 1.2}" opacity="${selectedLabel && !sel ? 0.3 : 1}" />
-      <text x="${labelW + barMaxW + 6}" y="${y + rowH * 0.62}" font-family="monospace" font-size="10" font-weight="${sel ? "700" : "400"}" fill="var(--carvao)">${c.valor} <tspan fill="#6B7280" font-size="8.5">${pctRk}%</tspan></text>
-    </g>`;
+    const [x, y] = toXY(angFor(i));
+    const prox = categorias[(i + 1) % n];
+    const [xN, yN] = toXY(angFor((i + 1) % n));
+    const peso = (c.valor + prox.valor) / (total * 2);
+    const opac = selectedLabel && selectedLabel !== c.label && selectedLabel !== prox.label ? 0.18 : 0.75;
+    const mx = cx + (cx - (x + xN) / 2) * 0.25, my = cy + (cy - (y + yN) / 2) * 0.25;
+    chords += `<path d="M ${x.toFixed(1)} ${y.toFixed(1)} Q ${mx.toFixed(1)} ${my.toFixed(1)} ${xN.toFixed(1)} ${yN.toFixed(1)}" fill="none" stroke="${cor}" stroke-width="${(1.2 + peso * 14).toFixed(1)}" opacity="${opac}"><title>${c.label} ↔ ${prox.label}</title></path>`;
   });
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" xmlns="http://www.w3.org/2000/svg">${rows}</svg>`;
+  categorias.forEach((c, i) => {
+    const cor = corCategoria(i);
+    const [x, y] = toXY(angFor(i));
+    const sel = selectedLabel === c.label;
+    const nomeCurto = c.label.length > 16 ? c.label.slice(0, 15) + "…" : c.label;
+    const ang = angFor(i), rad = ang * Math.PI / 180;
+    const lx = cx + (r + 28) * Math.cos(rad), ly = cy + (r + 28) * Math.sin(rad);
+    nodos += `<circle class="rank-bar" data-cat="${c.label}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${sel ? 8 : 6}" fill="${cor}" stroke="var(--surface)" stroke-width="2" style="cursor:pointer"><title>${c.label}: ${c.valor}</title></circle>`;
+    labels += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="monospace" font-size="9" font-weight="${sel ? 700 : 400}" fill="var(--carvao)" fill-opacity="${sel ? 1 : 0.7}">${nomeCurto}</text>`;
+  });
+
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${chords}${nodos}${labels}</svg>`;
 }
 
 function donutChartSVG(categorias, selectedLabel) {
-  const total = categorias.reduce((a, c) => a + c.valor, 0) || 1;
-  const cx = 100, cy = 100, r = 74, rInner = 46;
-  let angAcc = -90;
-  let fatias = "";
-  // anel de ticks externo — leitura de mostrador/instrumento
-  let ticks = "";
-  for (let d = 0; d < 360; d += 30) {
-    const rad = (d * Math.PI) / 180;
-    ticks += `<line x1="${(cx + 84 * Math.cos(rad)).toFixed(1)}" y1="${(cy + 84 * Math.sin(rad)).toFixed(1)}" x2="${(cx + 88 * Math.cos(rad)).toFixed(1)}" y2="${(cy + 88 * Math.sin(rad)).toFixed(1)}" stroke="#33415C" stroke-width="1"/>`;
+  const n = categorias.length;
+  const cell = 34, gap = 1, padL = 96, padT = 34;
+  const w = padL + n * (cell + gap) + 6, h = padT + n * (cell + gap) + 6;
+  const max = Math.max(...categorias.map(c => c.valor), 1);
+
+  function intensidade(i, j) {
+    if (i === j) return 100;
+    const d = Math.abs(categorias[i].valor - categorias[j].valor) / max;
+    return Math.max(30, Math.round(100 - d * 85));
   }
+  function corCelula(v) {
+    const t = v / 100;
+    return `rgba(34,211,238,${(0.10 + t * 0.72).toFixed(2)})`;
+  }
+
+  let cols = "", rows = "", cells = "";
   categorias.forEach((c, i) => {
-    const frac = c.valor / total;
-    const a0 = angAcc, a1 = angAcc + frac * 360;
-    angAcc = a1;
-    const toXY = (ang, radius) => {
-      const rad = (ang * Math.PI) / 180;
-      return [cx + radius * Math.cos(rad), cy + radius * Math.sin(rad)];
-    };
-    const [x0, y0] = toXY(a0, r), [x1, y1] = toXY(a1, r);
-    const [xi1, yi1] = toXY(a1, rInner), [xi0, yi0] = toXY(a0, rInner);
-    const large = a1 - a0 > 180 ? 1 : 0;
-    const cor = corCategoria(i);
+    const nomeCurto = c.label.length > 14 ? c.label.slice(0, 13) + "…" : c.label;
     const sel = selectedLabel === c.label;
-    const opacity = selectedLabel && !sel ? 0.28 : 1;
-    fatias += `<path class="donut-fatia" data-cat="${c.label}" d="M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} L ${xi1.toFixed(1)} ${yi1.toFixed(1)} A ${rInner} ${rInner} 0 ${large} 0 ${xi0.toFixed(1)} ${yi0.toFixed(1)} Z" fill="${cor}" stroke="var(--paper)" stroke-width="2.5" stroke-linejoin="round" opacity="${opacity}" style="cursor:pointer"><title>${c.label}: ${c.valor} (${((c.valor / total) * 100).toFixed(0)}%)</title></path>`;
+    const xTop = padL + i * (cell + gap) + cell / 2;
+    const yRow = padT + i * (cell + gap) + cell / 2;
+    cols += `<text x="${xTop.toFixed(1)}" y="${(padT - 8).toFixed(1)}" text-anchor="start" transform="rotate(-40 ${xTop.toFixed(1)} ${(padT - 8).toFixed(1)})" font-family="monospace" font-size="8" fill="var(--carvao)" fill-opacity="${sel ? 1 : 0.6}">${nomeCurto}</text>`;
+    rows += `<text class="corr-row" data-cat="${c.label}" x="${(padL - 8).toFixed(1)}" y="${yRow.toFixed(1)}" text-anchor="end" dominant-baseline="middle" font-family="monospace" font-size="9" font-weight="${sel ? 700 : 400}" fill="var(--carvao)" fill-opacity="${sel ? 1 : 0.75}" style="cursor:pointer">${nomeCurto}</text>`;
   });
-  const catSel = categorias.find(c => c.label === selectedLabel);
-  const totalLabel = catSel ? catSel.valor : total;
-  const svg = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7">${ticks}</g>${fatias}
-    <text x="${cx}" y="${cy - 2}" text-anchor="middle" font-family="'Space Grotesk',monospace" font-size="26" font-weight="800" fill="var(--carvao)">${totalLabel}</text>
-    <text x="${cx}" y="${cy + 13}" text-anchor="middle" font-family="monospace" font-size="7.5" letter-spacing="1.5" fill="#9AA3B2">${catSel ? "SELECIONADO" : "TOTAL"}</text>
-  </svg>`;
-  // legenda nomeada — cada categoria com sua cor própria (regra do DNA)
-  const leg = categorias.map((c, i) => {
-    const pct = ((c.valor / total) * 100).toFixed(0);
-    const sel = selectedLabel === c.label;
-    return `<button class="donut-leg" data-cat="${c.label}" style="opacity:${selectedLabel && !sel ? 0.45 : 1}">
-      <span class="sw" style="background:${corCategoria(i)}"></span>
-      <span class="lg-nome"${sel ? ' style="font-weight:700"' : ''}>${c.label}</span>
-      <span class="lg-pct">${pct}%</span>
-    </button>`;
-  }).join("");
-  return svg + `<div class="donut-legenda">${leg}</div>`;
+  categorias.forEach((ci, i) => {
+    categorias.forEach((cj, j) => {
+      const v = intensidade(i, j);
+      const x = padL + j * (cell + gap);
+      const y = padT + i * (cell + gap);
+      const dim = selectedLabel && ci.label !== selectedLabel && cj.label !== selectedLabel;
+      cells += `<rect data-cat="${i === j ? ci.label : ""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell}" height="${cell}" fill="${corCelula(v)}" opacity="${dim ? 0.3 : 1}" style="${i === j ? "cursor:pointer" : ""}"><title>${ci.label} × ${cj.label}: ${v}%</title></rect>`;
+      cells += `<text x="${(x + cell / 2).toFixed(1)}" y="${(y + cell / 2 + 3).toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="8.5" fill="var(--carvao)" fill-opacity="${v > 65 ? 0.95 : 0.6}">${v}</text>`;
+    });
+  });
+
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${cols}${rows}${cells}</svg>`;
 }
 
 // =====================================================================
