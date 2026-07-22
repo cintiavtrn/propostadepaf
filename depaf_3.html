@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEPAF — Portal Institucional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* base papel */
+  --carvao:#171410;
+  --paper:#F2ECDB;
+  --paper-line:#D8CDAE;
+  --surface:#FBF7EC;      /* superfície de card/gráfico — off-white quente, nunca #fff puro */
+  /* acentos PCBA — mesma família, mais saturação */
+  --tinta:#14507A;        --tinta-glow:rgba(20,80,122,.14);
+  --mostarda:#E3A424;     --mostarda-glow:rgba(227,164,36,.18);
+  --terracota:#C0492B;    --terracota-glow:rgba(192,73,43,.14);
+  --oliva:#3D7A50;        --oliva-glow:rgba(61,122,80,.14);
+  --dourado:#C9A96E;      --dourado-glow:rgba(201,169,110,.20);
+  --vinho:#7A2E3F;        --vinho-glow:rgba(122,46,63,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',sans-serif;line-height:1.5;overflow-x:hidden}
+.font-display{font-family:'Big Shoulders Display',sans-serif;text-transform:uppercase}
+.font-mono{font-family:'IBM Plex Mono',monospace}
+
+.grid-bg{
+  background-image:linear-gradient(var(--paper-line) 1px, transparent 1px),linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+  background-size:32px 32px;background-position:-1px -1px;
+}
+
+/* ---------- topbar ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;padding:16px 28px;
+  border-bottom:3px solid var(--carvao);position:sticky;top:0;background:var(--paper);z-index:50;
+}
+.topbar .brand{display:flex;align-items:center;gap:12px;cursor:pointer}
+.topbar .brand svg{width:28px;height:28px;color:var(--carvao)}
+.topbar .brand-text{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em}
+.topbar .brand-text b{font-family:'Big Shoulders Display',sans-serif;font-size:17px;display:block}
+.topbar .voltar{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.06em;
+  background:var(--carvao);color:var(--paper);border:none;padding:8px 14px;cursor:pointer;display:none;
+}
+.topbar .voltar.show{display:inline-block}
+
+/* ---------- home ---------- */
+#tela-inicio{padding:56px 24px 40px;max-width:1100px;margin:0 auto}
+.intro{max-width:680px;margin:0 auto 8px;text-align:center}
+.intro .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.16em;color:var(--terracota);margin-bottom:12px}
+.intro h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(34px,6vw,56px);line-height:0.95}
+.intro p{margin-top:16px;color:#40392f;font-size:15.5px}
+
+/* ---------- hub / rosa dos ventos ---------- */
+.hub-container{display:flex;justify-content:center;margin:44px auto 8px}
+.hub{position:relative;width:min(640px,92vw);aspect-ratio:1/1}
+.hub svg.rings{position:absolute;inset:0;width:100%;height:100%;color:#b8ae95}
+.hub-brasao{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:15%;color:var(--carvao);
+}
+.hub-brasao svg{width:100%;height:auto;display:block}
+.hub-node{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:112px;text-align:center;cursor:pointer;
+}
+.hub-node .dot{
+  width:46px;height:46px;margin:0 auto 8px;border:2.5px solid var(--carvao);background:var(--paper);
+  display:flex;align-items:center;justify-content:center;color:var(--node-color,var(--carvao));
+  transition:background 0.2s ease,color 0.2s ease,transform 0.2s ease;
+}
+.hub-node .dot svg{width:24px;height:24px}
+.hub-node:hover .dot{background:var(--node-color,var(--carvao));color:#fff;transform:scale(1.08)}
+.hub-node .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.04em;line-height:1.2}
+
+.direcao-card{
+  max-width:420px;margin:36px auto 0;background:#fff;border:2px solid var(--carvao);padding:18px 20px;text-align:left;
+}
+.direcao-card .card-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--terracota);margin-bottom:6px}
+.direcao-card h3{font-family:'Big Shoulders Display',sans-serif;font-size:19px}
+.direcao-card p{font-size:13px;color:#6b6353;margin-top:4px}
+
+/* ---------- telas dedicadas ---------- */
+.tela{padding:48px 24px 64px;max-width:900px;margin:0 auto}
+.tela[hidden]{display:none}
+.tela-head{display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--carvao);padding-bottom:16px;margin-bottom:28px}
+.tela-head .icon-grande{width:46px;height:46px;color:var(--tela-color,var(--carvao))}
+.tela-head .icon-grande svg{width:100%;height:100%}
+.tela-head h2{font-family:'Big Shoulders Display',sans-serif;font-size:clamp(28px,5vw,42px)}
+.tela-head .artigos{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6353;margin-top:2px}
+.tela-intro{max-width:64ch;color:#40392f;margin-bottom:30px;font-size:15.5px}
+
+.dados-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--carvao);border:2px solid var(--carvao)}
+@media (max-width:640px){.dados-grid{grid-template-columns:1fr}}
+.dado{background:#fff;padding:18px}
+.dado .valor{font-family:'Big Shoulders Display',sans-serif;font-size:26px;line-height:1}
+.dado .rotulo{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6353;margin-top:8px}
+.tag{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.08em;
+  padding:3px 7px;margin-top:8px;
+}
+.tag-exemplo{background:var(--mostarda);color:#2a2205}
+.tag-pendente{border:1.5px dashed #b8ae95;color:#8a8272;background:none}
+
+/* ---------- dashboard ---------- */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2px;background:var(--carvao);border:2px solid var(--carvao);margin-bottom:16px}
+.kpi-card{background:#fff;padding:16px 18px}
+.kpi-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:#6b6353;text-transform:uppercase}
+.kpi-value{font-family:'Big Shoulders Display',sans-serif;font-size:30px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi-delta{display:inline-flex;align-items:center;gap:3px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;margin-top:8px;padding:2px 6px}
+.kpi-delta.up{background:#e8f0e2;color:var(--oliva)}
+.kpi-delta.down{background:#f5e6e2;color:var(--terracota)}
+.kpi-delta.flat{background:var(--paper-line);color:#6b6353}
+.kpi-spark{width:100%;height:26px;margin-top:10px;display:block}
+.kpi-spark path{fill:none;stroke-width:1.6}
+.chart-grid line{stroke:var(--paper-line);stroke-width:1;stroke-dasharray:2 4}
+.chart-axis-label{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:#8a8272}
+
+/* ---------- assinatura visual: fita, glow, movimento ---------- */
+.tela-head{position:relative;overflow:hidden}
+.tela-head::before{
+  content:"";position:absolute;top:-20px;right:-70px;width:220px;height:44px;
+  background:var(--tela-color,var(--carvao));opacity:.92;
+  transform:rotate(-8deg);clip-path:polygon(3% 0,100% 0,97% 100%,0 100%);
+}
+.tela-head::after{
+  content:"DEPAF · PCBA";position:absolute;top:-6px;right:-28px;transform:rotate(-8deg);
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;color:var(--paper);
+}
+.dash-chart-box svg rect,.dash-chart-box svg path,.dash-chart-box svg circle{transition:opacity .25s ease,stroke-width .2s ease}
+.dash-chart-box svg .barra:hover,.dash-chart-box svg .donut-fatia:hover{opacity:.82}
+.kpi-card{border-top:3px solid var(--kpi-cor,var(--carvao))}
+.kpi-value{position:relative}
+.dash-chart-box h4{position:relative;padding-left:12px}
+.dash-chart-box h4::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;background:var(--tela-color,var(--carvao))}
+.hub-node .dot{box-shadow:0 0 0 0 transparent;border-color:var(--node-color,var(--carvao));color:var(--node-color,var(--carvao))}
+.hub-node:hover .dot{box-shadow:0 0 0 6px var(--node-glow,rgba(0,0,0,.08))}
+.hub .cardeal{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;fill:#8a7f5f}
+@keyframes girar-anel{to{stroke-dashoffset:-240}}
+.hub .anel-vivo{animation:girar-anel 24s linear infinite}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;min-height:0}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--carvao);color:var(--paper);padding:5px 8px 5px 10px}
+.filter-chip button{background:none;border:none;color:var(--paper);cursor:pointer;font-size:12px;opacity:.7}
+.filter-chip button:hover{opacity:1}
+
+/* ---------- projetos ---------- */
+.projeto-card{background:#fff;border:2px solid var(--carvao);padding:20px;margin-bottom:2px}
+.projeto-card .top{display:flex;gap:14px;align-items:flex-start}
+.projeto-card .icon{width:36px;height:36px;color:var(--carvao);flex:none}
+.projeto-card .icon svg{width:100%;height:100%}
+.projeto-card h3{font-family:'Big Shoulders Display',sans-serif;font-size:20px}
+.projeto-card p.texto{font-size:14px;color:#40392f;margin-top:4px}
+.progress-row{display:flex;align-items:center;gap:10px;margin-top:14px}
+.progress-track{flex:1;height:8px;background:var(--paper-line);position:relative}
+.progress-fill{height:100%;background:var(--terracota)}
+.progress-label{font-family:'IBM Plex Mono',monospace;font-size:11px;white-space:nowrap}
+.equipe{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6b6353;margin-top:14px;border-top:1px solid var(--paper-line);padding-top:10px}
+.equipe span{display:block}
+
+.tabs{display:flex;gap:2px;margin-bottom:0;border-bottom:3px solid var(--carvao)}
+.tab-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.05em;
+  background:var(--paper-line);color:var(--carvao);border:2px solid var(--carvao);border-bottom:none;
+  padding:10px 18px;cursor:pointer;position:relative;top:3px;
+}
+.tab-btn.active{background:#fff;top:0;padding-bottom:13px;font-weight:600}
+.tab-panel{padding-top:26px}
+.tab-panel[hidden]{display:none}
+
+.dash-filtros{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;background:#fff;border:2px solid var(--carvao);padding:14px 16px}
+.dash-filtro{display:flex;flex-direction:column;gap:4px}
+.dash-filtro label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#6b6353}
+.dash-filtro select{
+  font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:6px 8px;border:2px solid var(--carvao);background:var(--paper);color:var(--carvao);
+}
+
+.dash-charts{display:grid;grid-template-columns:1.3fr 1fr;gap:2px;background:var(--carvao);border:2px solid var(--carvao);margin-bottom:2px}
+@media (max-width:760px){.dash-charts{grid-template-columns:1fr}}
+.dash-chart-box{background:#fff;padding:18px}
+.dash-chart-box h4{font-family:'Big Shoulders Display',sans-serif;font-size:16px;margin-bottom:12px}
+.dash-chart-box svg{width:100%;height:auto;display:block}
+
+.dash-tabela{width:100%;border-collapse:collapse;background:#fff;border:2px solid var(--carvao)}
+.dash-tabela th,.dash-tabela td{border:1px solid var(--paper-line);padding:8px 10px;font-size:13px;text-align:left}
+.dash-tabela th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.06em;background:var(--paper);color:#6b6353}
+.dash-tabela td.num{font-family:'IBM Plex Mono',monospace;text-align:right}
+.dash-tabela tr.dim{opacity:0.35}
+.dash-tabela tr[data-cat]{cursor:pointer}
+.dash-tabela tr[data-cat]:hover{background:var(--paper-line)}
+.dash-tabela th.sortable{cursor:pointer;user-select:none}
+.dash-tabela th.sortable:hover{color:var(--carvao)}
+.dash-tabela th.sortable::after{content:"⇅";margin-left:4px;opacity:.4;font-size:9px}
+.dash-tabela th.sort-asc::after{content:"▲";opacity:1}
+.dash-tabela th.sort-desc::after{content:"▼";opacity:1}
+
+.dash-chart-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.dash-chart-head h4{margin-bottom:0}
+.dash-toggle{display:flex;border:1.5px solid var(--carvao)}
+.dash-toggle-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.04em;background:var(--paper);color:var(--carvao);border:none;padding:5px 9px;cursor:pointer}
+.dash-toggle-btn+.dash-toggle-btn{border-left:1.5px solid var(--carvao)}
+.dash-toggle-btn.active{background:var(--carvao);color:var(--paper)}
+.dash-export-row{display:flex;justify-content:flex-end;margin-bottom:16px}
+.btn-exportar-xlsx{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;background:var(--tinta);color:var(--paper);border:2px solid var(--carvao);padding:9px 16px;cursor:pointer}
+.btn-exportar-xlsx:hover{background:var(--mostarda);color:var(--carvao)}
+
+/* ---------- upgrade visual: superfícies quentes, legenda de donut, botões ---------- */
+.dado,.kpi-card,.projeto-card,.dash-chart-box,.dash-tabela,.direcao-card,.dash-filtros{background:var(--surface)}
+.dash-chart-box svg{overflow:visible}
+.donut-fatia{transition:transform .18s ease,opacity .2s ease;transform-origin:100px 100px}
+.donut-fatia:hover{transform:scale(1.04)}
+.donut-legenda{display:flex;flex-direction:column;gap:2px;margin-top:12px;border-top:1px solid var(--paper-line);padding-top:10px}
+.donut-leg{display:flex;align-items:center;gap:8px;background:none;border:none;padding:4px 2px;cursor:pointer;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--carvao);transition:opacity .15s ease}
+.donut-leg:hover{background:var(--paper-line)}
+.donut-leg .sw{width:11px;height:11px;flex:none;border:1px solid var(--carvao)}
+.donut-leg .lg-nome{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.donut-leg .lg-pct{font-variant-numeric:tabular-nums;color:#6b6353}
+.kpi-card:nth-child(1){--kpi-cor:var(--tela-color,var(--tinta))}
+.kpi-card:nth-child(2){--kpi-cor:var(--dourado)}
+.kpi-card:nth-child(3){--kpi-cor:var(--oliva)}
+.rank-bar .barra{transition:opacity .2s ease}
+.rank-bar:hover .barra{opacity:.82}
+.btn-exportar-pbi{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;background:var(--carvao);color:var(--dourado);border:2px solid var(--carvao);padding:9px 16px;cursor:pointer}
+.btn-exportar-pbi:hover{background:var(--vinho);color:var(--paper)}
+.dash-export-row{gap:8px}
+
+footer{border-top:3px solid var(--carvao);padding:30px 24px;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+footer .selo{width:58px;height:58px;color:var(--carvao)}
+footer .selo svg{width:100%;height:100%}
+footer .nota{font-family:'IBM Plex Mono',monospace;font-size:11px;max-width:44ch;color:#6b6353}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand" id="brand-home-btn">
+    <span id="brand-icon"></span>
+    <span class="brand-text">POLÍCIA CIVIL DA BAHIA<b>DEPAF</b></span>
+  </div>
+  <button class="voltar" id="voltar-btn">← VOLTAR AO PORTAL</button>
+</div>
+
+<div id="tela-inicio">
+  <div class="intro">
+    <div class="eyebrow">DOSSIÊ INSTITUCIONAL · PORTAL INTERATIVO</div>
+    <h1>DEPAF</h1>
+    <p>Departamento de Planejamento, Administração e Finanças da Polícia Civil da Bahia. Escolha um caminho a partir do brasão para explorar cada frente do departamento.</p>
+  </div>
+
+  <div class="hub-container">
+    <div class="hub grid-bg" id="hub" style="background:none"></div>
+  </div>
+
+  <div class="direcao-card" id="direcao-card"></div>
+</div>
+
+<section class="tela" id="tela-conteudo" hidden></section>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span class="selo" id="footer-selo"></span>
+    <span class="font-mono" style="font-size:11px;color:#6b6353">DEPAF · POLÍCIA CIVIL DA BAHIA<br>DOSSIÊ INTERNO — USO ADMINISTRATIVO</span>
+  </div>
+  <p class="nota">Brasão em interpretação de linha técnica, não reprodução oficial. Dados marcados "EXEMPLO" são fictícios e devem ser substituídos pelos números reais. Validar uso institucional antes de circulação externa.</p>
+</footer>
+
+<script>
+// =====================================================================
+// 1. ÍCONES E FUNÇÕES DE DESENHO (SVG)
+// =====================================================================
+const ICONS = {
+  brasao_pcba: "<svg viewBox=\"0 0 120 140\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"miter\" stroke-linecap=\"square\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <polygon points=\"60,6 64,18 76,18 66,25 70,37 60,30 50,37 54,25 44,18 56,18\" />\n  </g>\n  <g>\n    <path d=\"M 22 46 L 22 42 L 30 42 L 30 46 L 38 46 L 38 42 L 46 42 L 46 46 L 54 46 L 54 42 L 66 42 L 66 46 L 74 46 L 74 42 L 82 42 L 82 46 L 90 46 L 90 42 L 98 42 L 98 46 L 98 96 L 60 118 L 22 96 Z\" />\n    <path d=\"M 28 52 L 28 48 L 34 48 L 34 52 L 40 52 L 40 48 L 46 48 L 46 52 L 54 52 L 54 48 L 66 48 L 66 52 L 74 52 L 74 48 L 80 48 L 80 52 L 86 52 L 86 48 L 92 48 L 92 52 L 92 93 L 60 112 L 28 93 Z\" />\n  </g>\n  <g>\n    <line x1=\"60\" y1=\"58\" x2=\"60\" y2=\"104\" />\n    <line x1=\"48\" y1=\"72\" x2=\"72\" y2=\"72\" />\n    <line x1=\"48\" y1=\"80\" x2=\"72\" y2=\"80\" />\n    <line x1=\"48\" y1=\"72\" x2=\"48\" y2=\"80\" />\n    <line x1=\"72\" y1=\"72\" x2=\"72\" y2=\"80\" />\n  </g>\n  <g>\n    <path d=\"M 42 100 L 42 96 L 45 96 L 45 100 L 48 100 L 48 96 L 51 96 L 51 100 L 51 108 L 42 108 Z\" />\n    <rect x=\"45\" y=\"102\" width=\"3\" height=\"6\" />\n    <path d=\"M 69 100 L 69 96 L 72 96 L 72 100 L 75 100 L 75 96 L 78 96 L 78 100 L 78 108 L 69 108 Z\" />\n    <rect x=\"72\" y=\"102\" width=\"3\" height=\"6\" />\n  </g>\n  <g stroke-width=\"1.5\">\n    <path d=\"M 22 96 L 12 108 L 18 118 L 30 122 L 44 126 L 60 128\" />\n    <line x1=\"16\" y1=\"110\" x2=\"22\" y2=\"106\" />\n    <line x1=\"22\" y1=\"118\" x2=\"28\" y2=\"114\" />\n    <line x1=\"30\" y1=\"122\" x2=\"34\" y2=\"116\" />\n    <line x1=\"40\" y1=\"124\" x2=\"44\" y2=\"118\" />\n    <line x1=\"50\" y1=\"126\" x2=\"54\" y2=\"120\" />\n    <path d=\"M 98 96 L 108 108 L 102 118 L 90 122 L 76 126 L 60 128\" />\n    <line x1=\"104\" y1=\"110\" x2=\"98\" y2=\"106\" />\n    <line x1=\"98\" y1=\"118\" x2=\"92\" y2=\"114\" />\n    <line x1=\"90\" y1=\"122\" x2=\"86\" y2=\"116\" />\n    <line x1=\"80\" y1=\"124\" x2=\"76\" y2=\"118\" />\n    <line x1=\"70\" y1=\"126\" x2=\"66\" y2=\"120\" />\n    <polygon points=\"54,128 66,128 63,134 57,134\" />\n  </g>\n</svg>",
+  competencia_balanca: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <line x1=\"32\" y1=\"10\" x2=\"32\" y2=\"52\" />\n    <line x1=\"20\" y1=\"52\" x2=\"44\" y2=\"52\" />\n    <line x1=\"10\" y1=\"18\" x2=\"54\" y2=\"18\" />\n    <polygon points=\"10,18 4,32 16,32\" />\n    <polygon points=\"54,18 48,32 60,32\" />\n    <circle cx=\"32\" cy=\"10\" r=\"2\" fill=\"currentColor\" stroke=\"none\" />\n  </g>\n</svg>",
+  competencia_cofre: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"8\" y=\"12\" width=\"48\" height=\"40\" />\n    <rect x=\"14\" y=\"18\" width=\"36\" height=\"28\" />\n    <rect x=\"26\" y=\"26\" width=\"12\" height=\"12\" />\n    <line x1=\"32\" y1=\"26\" x2=\"32\" y2=\"20\" />\n    <line x1=\"32\" y1=\"38\" x2=\"32\" y2=\"44\" />\n    <line x1=\"8\" y1=\"52\" x2=\"12\" y2=\"56\" />\n    <line x1=\"56\" y1=\"52\" x2=\"52\" y2=\"56\" />\n  </g>\n</svg>",
+  competencia_folha_pagamento: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"10\" y=\"14\" width=\"44\" height=\"10\" />\n    <rect x=\"10\" y=\"27\" width=\"44\" height=\"10\" />\n    <rect x=\"10\" y=\"40\" width=\"44\" height=\"10\" />\n    <line x1=\"16\" y1=\"19\" x2=\"22\" y2=\"19\" />\n    <line x1=\"16\" y1=\"32\" x2=\"22\" y2=\"32\" />\n    <line x1=\"16\" y1=\"45\" x2=\"22\" y2=\"45\" />\n    <line x1=\"28\" y1=\"19\" x2=\"48\" y2=\"19\" />\n    <line x1=\"28\" y1=\"32\" x2=\"48\" y2=\"32\" />\n    <line x1=\"28\" y1=\"45\" x2=\"48\" y2=\"45\" />\n  </g>\n</svg>",
+  competencia_frota: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"10\" y=\"10\" width=\"44\" height=\"44\" />\n    <line x1=\"20\" y1=\"10\" x2=\"20\" y2=\"54\" />\n    <line x1=\"44\" y1=\"10\" x2=\"44\" y2=\"54\" />\n    <line x1=\"20\" y1=\"18\" x2=\"44\" y2=\"18\" />\n    <line x1=\"20\" y1=\"46\" x2=\"44\" y2=\"46\" />\n    <line x1=\"26\" y1=\"24\" x2=\"38\" y2=\"24\" />\n    <line x1=\"26\" y1=\"30\" x2=\"38\" y2=\"30\" />\n    <line x1=\"26\" y1=\"36\" x2=\"38\" y2=\"36\" />\n    <line x1=\"26\" y1=\"42\" x2=\"38\" y2=\"42\" />\n  </g>\n</svg>",
+  competencia_modernizacao: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <polygon points=\"32,6 38,12 44,10 46,18 54,20 52,28 58,32 52,36 54,44 46,46 44,54 38,52 32,58 26,52 20,54 18,46 10,44 12,36 6,32 12,28 10,20 18,18 20,10 26,12\" />\n    <polygon points=\"32,22 42,32 32,42 22,32\" />\n  </g>\n</svg>",
+  competencia_normas: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <polygon points=\"12,8 44,8 52,16 52,56 12,56\" />\n    <polyline points=\"44,8 44,16 52,16\" />\n    <line x1=\"18\" y1=\"26\" x2=\"42\" y2=\"26\" />\n    <line x1=\"18\" y1=\"32\" x2=\"42\" y2=\"32\" />\n    <line x1=\"18\" y1=\"38\" x2=\"34\" y2=\"38\" />\n    <polygon points=\"34,42 46,42 46,54 34,54\" />\n    <line x1=\"34\" y1=\"42\" x2=\"46\" y2=\"54\" />\n    <line x1=\"46\" y1=\"42\" x2=\"34\" y2=\"54\" />\n  </g>\n</svg>",
+  competencia_orcamento: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"6\" y=\"24\" width=\"52\" height=\"16\" />\n    <line x1=\"12\" y1=\"24\" x2=\"12\" y2=\"34\" />\n    <line x1=\"20\" y1=\"24\" x2=\"20\" y2=\"30\" />\n    <line x1=\"28\" y1=\"24\" x2=\"28\" y2=\"34\" />\n    <line x1=\"36\" y1=\"24\" x2=\"36\" y2=\"30\" />\n    <line x1=\"44\" y1=\"24\" x2=\"44\" y2=\"34\" />\n    <line x1=\"52\" y1=\"24\" x2=\"52\" y2=\"30\" />\n  </g>\n</svg>",
+  competencia_portaria: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <line x1=\"8\" y1=\"52\" x2=\"24\" y2=\"52\" />\n    <line x1=\"40\" y1=\"52\" x2=\"56\" y2=\"52\" />\n    <line x1=\"24\" y1=\"52\" x2=\"24\" y2=\"16\" />\n    <path d=\"M 24 16 A 36 36 0 0 1 40 52\" />\n    <circle cx=\"38\" cy=\"48\" r=\"1.5\" fill=\"currentColor\" stroke=\"none\" />\n  </g>\n</svg>",
+  competencia_tombamento: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <polygon points=\"10,18 54,18 54,46 10,46\" />\n    <circle cx=\"16\" cy=\"22\" r=\"1.5\" fill=\"currentColor\" stroke=\"none\" />\n    <circle cx=\"48\" cy=\"22\" r=\"1.5\" fill=\"currentColor\" stroke=\"none\" />\n    <circle cx=\"16\" cy=\"42\" r=\"1.5\" fill=\"currentColor\" stroke=\"none\" />\n    <circle cx=\"48\" cy=\"42\" r=\"1.5\" fill=\"currentColor\" stroke=\"none\" />\n    <line x1=\"18\" y1=\"28\" x2=\"46\" y2=\"28\" />\n    <text x=\"32\" y=\"40\" text-anchor=\"middle\" font-family=\"monospace\" font-size=\"9\" fill=\"currentColor\" stroke=\"none\" letter-spacing=\"1\">N\u00b0</text>\n  </g>\n</svg>",
+  cota_horizontal: "<svg viewBox=\"0 0 240 28\" width=\"240\" height=\"28\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" xmlns=\"http://www.w3.org/2000/svg\">\n  <line x1=\"4\" y1=\"18\" x2=\"236\" y2=\"18\" />\n  <line x1=\"4\" y1=\"10\" x2=\"4\" y2=\"26\" />\n  <line x1=\"236\" y1=\"10\" x2=\"236\" y2=\"26\" />\n  <polygon points=\"10,18 4,15 4,21\" fill=\"currentColor\" stroke=\"none\" />\n  <polygon points=\"230,18 236,15 236,21\" fill=\"currentColor\" stroke=\"none\" />\n  <rect x=\"94\" y=\"4\" width=\"52\" height=\"12\" fill=\"var(--paper, #ffffff)\" stroke=\"none\" />\n  <text x=\"120\" y=\"14\" text-anchor=\"middle\" font-family=\"monospace\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" letter-spacing=\"1\">64,00</text>\n</svg>",
+  distintivo_pcba: "<svg viewBox=\"0 0 140 170\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"miter\" stroke-linecap=\"square\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <g id=\"brasao-pcba-mark\">\n      <g>\n        <polygon points=\"60,6 64,18 76,18 66,25 70,37 60,30 50,37 54,25 44,18 56,18\" />\n      </g>\n      <g>\n        <path d=\"M 22 46 L 22 42 L 30 42 L 30 46 L 38 46 L 38 42 L 46 42 L 46 46 L 54 46 L 54 42 L 66 42 L 66 46 L 74 46 L 74 42 L 82 42 L 82 46 L 90 46 L 90 42 L 98 42 L 98 46 L 98 96 L 60 118 L 22 96 Z\" />\n        <path d=\"M 28 52 L 28 48 L 34 48 L 34 52 L 40 52 L 40 48 L 46 48 L 46 52 L 54 52 L 54 48 L 66 48 L 66 52 L 74 52 L 74 48 L 80 48 L 80 52 L 86 52 L 86 48 L 92 48 L 92 52 L 92 93 L 60 112 L 28 93 Z\" />\n      </g>\n      <g>\n        <line x1=\"60\" y1=\"58\" x2=\"60\" y2=\"104\" />\n        <line x1=\"48\" y1=\"72\" x2=\"72\" y2=\"72\" />\n        <line x1=\"48\" y1=\"80\" x2=\"72\" y2=\"80\" />\n        <line x1=\"48\" y1=\"72\" x2=\"48\" y2=\"80\" />\n        <line x1=\"72\" y1=\"72\" x2=\"72\" y2=\"80\" />\n      </g>\n      <g>\n        <path d=\"M 42 100 L 42 96 L 45 96 L 45 100 L 48 100 L 48 96 L 51 96 L 51 100 L 51 108 L 42 108 Z\" />\n        <rect x=\"45\" y=\"102\" width=\"3\" height=\"6\" />\n        <path d=\"M 69 100 L 69 96 L 72 96 L 72 100 L 75 100 L 75 96 L 78 96 L 78 100 L 78 108 L 69 108 Z\" />\n        <rect x=\"72\" y=\"102\" width=\"3\" height=\"6\" />\n      </g>\n      <g stroke-width=\"1.5\">\n        <path d=\"M 22 96 L 12 108 L 18 118 L 30 122 L 44 126 L 60 128\" />\n        <line x1=\"16\" y1=\"110\" x2=\"22\" y2=\"106\" />\n        <line x1=\"22\" y1=\"118\" x2=\"28\" y2=\"114\" />\n        <line x1=\"30\" y1=\"122\" x2=\"34\" y2=\"116\" />\n        <line x1=\"40\" y1=\"124\" x2=\"44\" y2=\"118\" />\n        <line x1=\"50\" y1=\"126\" x2=\"54\" y2=\"120\" />\n        <path d=\"M 98 96 L 108 108 L 102 118 L 90 122 L 76 126 L 60 128\" />\n        <line x1=\"104\" y1=\"110\" x2=\"98\" y2=\"106\" />\n        <line x1=\"98\" y1=\"118\" x2=\"92\" y2=\"114\" />\n        <line x1=\"90\" y1=\"122\" x2=\"86\" y2=\"116\" />\n        <line x1=\"80\" y1=\"124\" x2=\"76\" y2=\"118\" />\n        <line x1=\"70\" y1=\"126\" x2=\"66\" y2=\"120\" />\n        <polygon points=\"54,128 66,128 63,134 57,134\" />\n      </g>\n    </g>\n  </defs>\n\n  \n  <path d=\"M 20 22 L 120 22 L 130 40 L 130 118 L 70 162 L 10 118 L 10 40 Z\" />\n  \n  <path d=\"M 26 30 L 114 30 L 122 44 L 122 114 L 70 154 L 18 114 L 18 44 Z\" />\n\n  \n  <g>\n    <polygon points=\"18,36 122,36 128,44 122,52 18,52 24,44\" />\n    <polygon points=\"10,40 18,36 24,44 18,52 10,48\" />\n    <polygon points=\"130,40 122,36 116,44 122,52 130,48\" />\n    <text x=\"70\" y=\"47\" text-anchor=\"middle\" font-family=\"monospace\" font-weight=\"700\" font-size=\"9\" letter-spacing=\"2\" fill=\"currentColor\" stroke=\"none\">POL\u00cdCIA</text>\n  </g>\n\n  \n  <use href=\"#brasao-pcba-mark\" transform=\"translate(35 54) scale(0.42)\" />\n\n  \n  <g>\n    <polygon points=\"26,130 114,130 120,138 114,146 26,146 32,138\" />\n    <text x=\"70\" y=\"141\" text-anchor=\"middle\" font-family=\"monospace\" font-weight=\"700\" font-size=\"9\" letter-spacing=\"3\" fill=\"currentColor\" stroke=\"none\">CIVIL \u00b7 BA</text>\n  </g>\n</svg>",
+  moeda: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <circle cx=\"32\" cy=\"32\" r=\"22\" />\n    <line x1=\"54\" y1=\"32\" x2=\"60\" y2=\"32\" />\n    <line x1=\"48\" y1=\"48\" x2=\"52\" y2=\"52\" />\n    <line x1=\"32\" y1=\"54\" x2=\"32\" y2=\"60\" />\n    <line x1=\"16\" y1=\"48\" x2=\"12\" y2=\"52\" />\n    <line x1=\"10\" y1=\"32\" x2=\"4\" y2=\"32\" />\n    <line x1=\"16\" y1=\"16\" x2=\"12\" y2=\"12\" />\n    <line x1=\"32\" y1=\"10\" x2=\"32\" y2=\"4\" />\n    <line x1=\"48\" y1=\"16\" x2=\"52\" y2=\"12\" />\n    <line x1=\"32\" y1=\"24\" x2=\"32\" y2=\"40\" />\n    <line x1=\"24\" y1=\"32\" x2=\"40\" y2=\"32\" />\n  </g>\n</svg>",
+  predio: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"14\" y=\"8\" width=\"36\" height=\"48\" />\n    <line x1=\"8\" y1=\"56\" x2=\"56\" y2=\"56\" />\n    <rect x=\"20\" y=\"16\" width=\"6\" height=\"6\" />\n    <rect x=\"32\" y=\"16\" width=\"6\" height=\"6\" />\n    <rect x=\"20\" y=\"28\" width=\"6\" height=\"6\" />\n    <rect x=\"32\" y=\"28\" width=\"6\" height=\"6\" />\n    <rect x=\"20\" y=\"40\" width=\"6\" height=\"6\" />\n    <rect x=\"32\" y=\"40\" width=\"6\" height=\"6\" />\n  </g>\n</svg>",
+  projeto_investigacao: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" />\n    <rect x=\"24\" y=\"26\" width=\"16\" height=\"12\" />\n    <rect x=\"14\" y=\"14\" width=\"6\" height=\"6\" />\n    <rect x=\"44\" y=\"14\" width=\"6\" height=\"6\" />\n    <rect x=\"14\" y=\"44\" width=\"6\" height=\"6\" />\n    <rect x=\"44\" y=\"44\" width=\"6\" height=\"6\" />\n  </g>\n</svg>",
+  projeto_rede: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"6\" y=\"10\" width=\"14\" height=\"14\" />\n    <rect x=\"44\" y=\"10\" width=\"14\" height=\"14\" />\n    <rect x=\"25\" y=\"40\" width=\"14\" height=\"14\" />\n    <line x1=\"20\" y1=\"17\" x2=\"44\" y2=\"17\" />\n    <line x1=\"13\" y1=\"24\" x2=\"30\" y2=\"40\" />\n    <line x1=\"51\" y1=\"24\" x2=\"34\" y2=\"40\" />\n  </g>\n</svg>",
+  projeto_sac: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <rect x=\"8\" y=\"22\" width=\"20\" height=\"10\" />\n    <rect x=\"36\" y=\"22\" width=\"20\" height=\"10\" />\n    <line x1=\"8\" y1=\"42\" x2=\"56\" y2=\"42\" />\n    <line x1=\"8\" y1=\"46\" x2=\"56\" y2=\"46\" />\n    <circle cx=\"32\" cy=\"52\" r=\"3\" />\n  </g>\n</svg>",
+  selo: "<svg viewBox=\"0 0 120 120\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <polygon points=\"35,10 85,10 110,35 110,85 85,110 35,110 10,85 10,35\" />\n  <polygon points=\"40,18 80,18 102,40 102,80 80,102 40,102 18,80 18,40\" />\n  <text x=\"60\" y=\"56\" text-anchor=\"middle\" font-family=\"monospace\" font-size=\"16\" letter-spacing=\"2\" fill=\"currentColor\" stroke=\"none\" font-weight=\"700\">DEPAF</text>\n  <line x1=\"28\" y1=\"64\" x2=\"92\" y2=\"64\" />\n  <text x=\"60\" y=\"80\" text-anchor=\"middle\" font-family=\"monospace\" font-size=\"8\" letter-spacing=\"3\" fill=\"currentColor\" stroke=\"none\">PROTOCOLO</text>\n</svg>",
+  viatura: "<svg viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g>\n    <polygon points=\"8,50 8,42 16,42 20,34 44,34 48,42 56,42 56,50\" />\n    <line x1=\"8\" y1=\"50\" x2=\"56\" y2=\"50\" />\n    <line x1=\"20\" y1=\"38\" x2=\"44\" y2=\"38\" />\n    <line x1=\"32\" y1=\"34\" x2=\"32\" y2=\"42\" />\n    <rect x=\"27\" y=\"28\" width=\"10\" height=\"5\" />\n    <circle cx=\"18\" cy=\"50\" r=\"5\" />\n    <circle cx=\"46\" cy=\"50\" r=\"5\" />\n  </g>\n</svg>",
+};
+
+function seloSVG(label = "DEPAF", sub = "PROTOCOLO") {
+  return `<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="35,10 85,10 110,35 110,85 85,110 35,110 10,85 10,35" />
+  <polygon points="40,18 80,18 102,40 102,80 80,102 40,102 18,80 18,40" />
+  <text x="60" y="56" text-anchor="middle" font-family="monospace" font-size="16" letter-spacing="2" fill="currentColor" stroke="none" font-weight="700">${label}</text>
+  <line x1="28" y1="64" x2="92" y2="64" />
+  <text x="60" y="80" text-anchor="middle" font-family="monospace" font-size="8" letter-spacing="3" fill="currentColor" stroke="none">${sub}</text>
+</svg>`;
+}
+
+function cotaHorizontalSVG(value = "64,00", width = 240) {
+  const w = width;
+  return `<svg viewBox="0 0 ${w} 28" width="${w}" height="28" fill="none" stroke="currentColor" stroke-width="1.25" xmlns="http://www.w3.org/2000/svg">
+  <line x1="4" y1="18" x2="${w - 4}" y2="18" />
+  <line x1="4" y1="10" x2="4" y2="26" />
+  <line x1="${w - 4}" y1="10" x2="${w - 4}" y2="26" />
+  <polygon points="10,18 4,15 4,21" fill="currentColor" stroke="none" />
+  <polygon points="${w - 10},18 ${w - 4},15 ${w - 4},21" fill="currentColor" stroke="none" />
+  <rect x="${w / 2 - 26}" y="4" width="52" height="12" fill="var(--paper, #ffffff)" stroke="none" />
+  <text x="${w / 2}" y="14" text-anchor="middle" font-family="monospace" font-size="10" fill="currentColor" stroke="none" letter-spacing="1">${value}</text>
+</svg>`;
+}
+
+// converte a cor de acento na sua versão glow translúcida (fundo/trilha).
+// var(--tinta) -> var(--tinta-glow); hex -> rgba calculado. NUNCA some silenciosamente.
+const GLOW_MAP = {
+  "var(--tinta)": "var(--tinta-glow)",
+  "var(--mostarda)": "var(--mostarda-glow)",
+  "var(--terracota)": "var(--terracota-glow)",
+  "var(--oliva)": "var(--oliva-glow)",
+  "var(--dourado)": "var(--dourado-glow)",
+  "var(--vinho)": "var(--vinho-glow)"
+};
+function corGlow(cor) {
+  if (GLOW_MAP[cor]) return GLOW_MAP[cor];
+  const m = /([0-9a-f]{6})/i.exec(String(cor));
+  if (m) { const n = parseInt(m[1], 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},.16)`; }
+  return "rgba(20,80,122,.14)";
+}
+// hachura de engenheiro para a "trilha fantasma" — dá textura de instrumento no lugar do bloco chapado
+function hatchDefs(id, cor) {
+  return `<defs><pattern id="${id}" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+    <rect width="6" height="6" fill="${corGlow(cor)}"/>
+    <line x1="0" y1="0" x2="0" y2="6" stroke="${cor}" stroke-width="0.7" opacity="0.28"/>
+  </pattern></defs>`;
+}
+
+function barChartSVG(pontos, cor) {
+  const w = 520, h = 220, padL = 36, padB = 26, padT = 28, padR = 10;
+  const max = Math.max(...pontos.map(p => p.valor), 1);
+  const bw = (w - padL - padR) / pontos.length;
+  
+  let grid = `<g class="chart-grid">`;
+  for(let gy=1; gy<=3; gy++){
+    const yy = padT + ((h-padT-padB)/4)*gy;
+    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${w-padR}" y2="${yy.toFixed(1)}"/>`;
+  }
+  grid += `</g>`;
+
+  const defs = hatchDefs("hatch-bar", cor);
+  let bars = "";
+  pontos.forEach((p, i) => {
+    const bh = ((h - padT - padB) * p.valor) / max;
+    const x = padL + i * bw + bw * 0.18;
+    const y = h - padB - bh;
+    const bwReal = bw * 0.64;
+    const ultimo = i === pontos.length - 1;
+    // trilha fantasma com hachura: mostra o teto da série sem virar bloco chapado
+    bars += `<rect x="${x.toFixed(1)}" y="${padT}" width="${bwReal.toFixed(1)}" height="${(h - padT - padB).toFixed(1)}" fill="url(#hatch-bar)" />`;
+    bars += `<rect class="barra" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bwReal.toFixed(1)}" height="${bh.toFixed(1)}" fill="${cor}" stroke="var(--carvao)" stroke-width="${ultimo ? 2.2 : 1.4}"><title>${p.label}: ${p.valor}</title></rect>`;
+    // fio de luz no topo da barra — leitura de "medição", não decoração
+    bars += `<line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x + bwReal).toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--paper)" stroke-width="1" opacity="0.55" />`;
+    if (ultimo) bars += `<rect x="${x.toFixed(1)}" y="${(y - 4).toFixed(1)}" width="${bwReal.toFixed(1)}" height="4" fill="var(--carvao)" />`;
+    bars += `<text x="${(x + bwReal / 2).toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#8a8272"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
+    const labelY = Math.max(y - 7, 12);
+    bars += `<text x="${(x + bwReal / 2).toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="${ultimo ? "10.5" : "9"}" font-weight="${ultimo ? "700" : "400"}" fill="var(--carvao)">${p.valor}</text>`;
+  });
+  bars += `<line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="var(--carvao)" stroke-width="2" />`;
+
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" xmlns="http://www.w3.org/2000/svg">${defs}${grid}${bars}</svg>`;
+}
+
+function lineChartSVG(pontos, cor) {
+  const w = 520, h = 220, padL = 36, padB = 26, padT = 28, padR = 10;
+  const max = Math.max(...pontos.map(p => p.valor), 1);
+  const stepX = (w - padL - padR) / (pontos.length - 1 || 1);
+  
+  let grid = `<g class="chart-grid">`;
+  for(let gy=1; gy<=3; gy++){
+    const yy = padT + ((h-padT-padB)/4)*gy;
+    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${w-padR}" y2="${yy.toFixed(1)}"/>`;
+  }
+  grid += `</g>`;
+
+  const glow = corGlow(cor);
+  let path = "", area = "", dots = "", labels = "";
+  let x0 = padL, xN = padL;
+  pontos.forEach((p, i) => {
+    const x = padL + i * stepX;
+    const y = h - padB - ((h - padT - padB) * p.valor) / max;
+    const ultimo = i === pontos.length - 1;
+    path += (i === 0 ? "M" : "L") + x.toFixed(1) + " " + y.toFixed(1) + " ";
+    if (i === 0) x0 = x;
+    xN = x;
+    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${ultimo ? 5 : 3.2}" fill="${ultimo ? "var(--carvao)" : cor}" stroke="var(--carvao)" stroke-width="1.5"><title>${p.label}: ${p.valor}</title></circle>`;
+    labels += `<text x="${x.toFixed(1)}" y="${h - padB + 14}" text-anchor="middle" font-family="monospace" font-size="9" fill="${ultimo ? "var(--carvao)" : "#8a8272"}" font-weight="${ultimo ? "700" : "400"}">${p.label}</text>`;
+    if (ultimo) {
+      const boxY = Math.max(y - 26, 4);
+      labels += `<g><rect x="${(x - 26).toFixed(1)}" y="${boxY.toFixed(1)}" width="52" height="16" fill="var(--carvao)" /><text x="${x.toFixed(1)}" y="${(boxY + 11.5).toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="var(--paper)">${p.valor}</text></g>`;
+    } else {
+      const labelY = Math.max(y - 8, 12);
+      labels += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--carvao)">${p.valor}</text>`;
+    }
+  });
+  area = `<path d="${path}L ${xN.toFixed(1)} ${h - padB} L ${x0.toFixed(1)} ${h - padB} Z" fill="${glow}" stroke="none" />`;
+
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" xmlns="http://www.w3.org/2000/svg">${grid}${area}<path d="${path}" fill="none" stroke="${cor}" stroke-width="2.4" />${dots}<line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="var(--carvao)" stroke-width="2" />${labels}</svg>`;
+}
+
+function rankingChartSVG(categorias, selectedLabel) {
+  const w = 300, rowH = 30, padL = 8, padR = 46, labelW = 118;
+  const max = Math.max(...categorias.map(c => c.valor), 1);
+  const h = categorias.length * rowH + 10;
+  let rows = "";
+  categorias.forEach((c, i) => {
+    const y = 8 + i * rowH;
+    const barMaxW = w - labelW - padR;
+    const barW = Math.max((barMaxW * c.valor) / max, 2);
+    const cor = corCategoria(i);
+    const sel = selectedLabel === c.label;
+    const nomeCurto = c.label.length > 20 ? c.label.slice(0, 19) + "…" : c.label;
+    const totalRk = categorias.reduce((a, cc) => a + cc.valor, 0) || 1;
+    const pctRk = ((c.valor / totalRk) * 100).toFixed(0);
+    rows += `<g class="rank-bar" data-cat="${c.label}" style="cursor:pointer">
+      <title>${c.label}: ${c.valor} (${pctRk}%)</title>
+      <text x="${padL}" y="${y + rowH * 0.62}" font-family="monospace" font-size="10.5" font-weight="${sel ? "700" : "400"}" fill="var(--carvao)">${nomeCurto}</text>
+      <rect x="${labelW}" y="${y + 4}" width="${barMaxW}" height="${rowH - 12}" fill="${corGlow(cor)}" stroke="none" />
+      <rect class="barra" x="${labelW}" y="${y + 4}" width="${barW.toFixed(1)}" height="${rowH - 12}" fill="${cor}" stroke="var(--carvao)" stroke-width="${sel ? 2.5 : 1.2}" opacity="${selectedLabel && !sel ? 0.3 : 1}" />
+      <text x="${labelW + barMaxW + 6}" y="${y + rowH * 0.62}" font-family="monospace" font-size="10" font-weight="${sel ? "700" : "400"}" fill="var(--carvao)">${c.valor} <tspan fill="#8a8272" font-size="8.5">${pctRk}%</tspan></text>
+    </g>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" xmlns="http://www.w3.org/2000/svg">${rows}</svg>`;
+}
+
+function donutChartSVG(categorias, selectedLabel) {
+  const total = categorias.reduce((a, c) => a + c.valor, 0) || 1;
+  const cx = 100, cy = 100, r = 74, rInner = 46;
+  let angAcc = -90;
+  let fatias = "";
+  // anel de ticks externo — leitura de mostrador/instrumento
+  let ticks = "";
+  for (let d = 0; d < 360; d += 30) {
+    const rad = (d * Math.PI) / 180;
+    ticks += `<line x1="${(cx + 84 * Math.cos(rad)).toFixed(1)}" y1="${(cy + 84 * Math.sin(rad)).toFixed(1)}" x2="${(cx + 88 * Math.cos(rad)).toFixed(1)}" y2="${(cy + 88 * Math.sin(rad)).toFixed(1)}" stroke="#b8ae95" stroke-width="1"/>`;
+  }
+  categorias.forEach((c, i) => {
+    const frac = c.valor / total;
+    const a0 = angAcc, a1 = angAcc + frac * 360;
+    angAcc = a1;
+    const toXY = (ang, radius) => {
+      const rad = (ang * Math.PI) / 180;
+      return [cx + radius * Math.cos(rad), cy + radius * Math.sin(rad)];
+    };
+    const [x0, y0] = toXY(a0, r), [x1, y1] = toXY(a1, r);
+    const [xi1, yi1] = toXY(a1, rInner), [xi0, yi0] = toXY(a0, rInner);
+    const large = a1 - a0 > 180 ? 1 : 0;
+    const cor = corCategoria(i);
+    const sel = selectedLabel === c.label;
+    const opacity = selectedLabel && !sel ? 0.28 : 1;
+    fatias += `<path class="donut-fatia" data-cat="${c.label}" d="M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} L ${xi1.toFixed(1)} ${yi1.toFixed(1)} A ${rInner} ${rInner} 0 ${large} 0 ${xi0.toFixed(1)} ${yi0.toFixed(1)} Z" fill="${cor}" stroke="var(--paper)" stroke-width="2.5" stroke-linejoin="round" opacity="${opacity}" style="cursor:pointer"><title>${c.label}: ${c.valor} (${((c.valor / total) * 100).toFixed(0)}%)</title></path>`;
+  });
+  const catSel = categorias.find(c => c.label === selectedLabel);
+  const totalLabel = catSel ? catSel.valor : total;
+  const svg = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7">${ticks}</g>${fatias}
+    <text x="${cx}" y="${cy - 2}" text-anchor="middle" font-family="'Big Shoulders Display',monospace" font-size="26" font-weight="800" fill="var(--carvao)">${totalLabel}</text>
+    <text x="${cx}" y="${cy + 13}" text-anchor="middle" font-family="monospace" font-size="7.5" letter-spacing="1.5" fill="#6b6353">${catSel ? "SELECIONADO" : "TOTAL"}</text>
+  </svg>`;
+  // legenda nomeada — cada categoria com sua cor própria (regra do DNA)
+  const leg = categorias.map((c, i) => {
+    const pct = ((c.valor / total) * 100).toFixed(0);
+    const sel = selectedLabel === c.label;
+    return `<button class="donut-leg" data-cat="${c.label}" style="opacity:${selectedLabel && !sel ? 0.45 : 1}">
+      <span class="sw" style="background:${corCategoria(i)}"></span>
+      <span class="lg-nome"${sel ? ' style="font-weight:700"' : ''}>${c.label}</span>
+      <span class="lg-pct">${pct}%</span>
+    </button>`;
+  }).join("");
+  return svg + `<div class="donut-legenda">${leg}</div>`;
+}
+
+// =====================================================================
+// 2. DADOS DO PORTAL
+// =====================================================================
+const PORTAIS = [
+  {
+    id: "pessoal",
+    label: "Pessoal",
+    icon: "competencia_folha_pagamento",
+    cor: "var(--mostarda)",
+    artigos: ["I"],
+    intro: "Elabora a folha de pagamento e controla a lotação e vacância dos cargos permanentes e temporários da Polícia Civil.",
+    dados: [
+      { rotulo: "Servidores lotados no DEPAF", valor: "312", exemplo: true },
+      { rotulo: "Cargos em vacância", valor: "28", exemplo: true },
+      { rotulo: "Admissões no último concurso", valor: "45", exemplo: true },
+      { rotulo: "Coordenador do setor", valor: "A preencher", exemplo: false, pendente: true }
+    ]
+  },
+  {
+    id: "normas",
+    label: "Normas e Modernização",
+    icon: "competencia_normas",
+    cor: "var(--terracota)",
+    artigos: ["II", "VI"],
+    intro: "Redige decretos, títulos, normas e procedimentos, e conduz a modernização administrativa em articulação com a SSP.",
+    dados: [
+      { rotulo: "Normas emitidas no ano", valor: "64", exemplo: true },
+      { rotulo: "Projetos de modernização em curso", valor: "3", exemplo: true },
+      { rotulo: "Coordenador do setor", valor: "A preencher", exemplo: false, pendente: true }
+    ]
+  },
+  {
+    id: "patrimonio",
+    label: "Patrimônio e Bens",
+    icon: "competencia_tombamento",
+    cor: "var(--oliva)",
+    artigos: ["III", "VII"],
+    intro: "Cadastra, tomba e controla bens e material de consumo — inclui material de escritório e de expediente das unidades — além de guardar bens apreendidos ou arrecadados vinculados a ocorrências. Armamento e munição não entram aqui: ficam com a Coordenação de Fiscalização de Produtos Controlados (CFPC), unidade à parte do DEPAF.",
+    dados: [
+      { rotulo: "Itens tombados no cadastro", valor: "1.842", exemplo: true },
+      { rotulo: "Requisições de material de expediente no mês", valor: "57", exemplo: true },
+      { rotulo: "Bens apreendidos sob guarda", valor: "96", exemplo: true },
+      { rotulo: "Itens abaixo do estoque mínimo", valor: "12", exemplo: true },
+      { rotulo: "Tempo médio de atendimento do pedido", valor: "9 dias", exemplo: true },
+      { rotulo: "Atendimento — unidades da capital", valor: "6 dias", exemplo: true },
+      { rotulo: "Atendimento — unidades do interior", valor: "17 dias", exemplo: true },
+      { rotulo: "Saldo consumido da Ata de Registro de Preços vigente", valor: "48%", exemplo: true },
+      { rotulo: "Classe A — reposição mensal", valor: "Munição, combustível, perícia", exemplo: true },
+      { rotulo: "Classe C — reposição trimestral/semestral", valor: "Material de escritório comum", exemplo: true },
+      { rotulo: "Coordenador do setor", valor: "A preencher", exemplo: false, pendente: true }
+    ]
+  },
+  {
+    id: "frota",
+    label: "Frota",
+    icon: "viatura",
+    cor: "var(--oliva)",
+    artigos: ["IV"],
+    intro: "Mantém, abastece e planeja a expansão da frota de viaturas, prevendo renovação e adequação ao serviço.",
+    dados: [
+      { rotulo: "Frota total", valor: "187 viaturas", exemplo: true },
+      { rotulo: "Compacto / passeio", valor: "94 unidades", exemplo: true },
+      { rotulo: "SUV / utilitário", valor: "68 unidades", exemplo: true },
+      { rotulo: "Especial / blindado", valor: "25 unidades", exemplo: true },
+      { rotulo: "Moto", valor: "A preencher", exemplo: false, pendente: true },
+      { rotulo: "Idade média da frota", valor: "6 anos", exemplo: true },
+      { rotulo: "Viaturas ativas", valor: "94%", exemplo: true },
+      { rotulo: "Em manutenção no momento", valor: "9 viaturas", exemplo: true },
+      { rotulo: "Tempo médio parado em manutenção", valor: "5 dias", exemplo: true },
+      { rotulo: "Taxa de renovação anual", valor: "8%", exemplo: true },
+      { rotulo: "Custo médio de manutenção por viatura/ano", valor: "R$ 6.200,00", exemplo: true },
+      { rotulo: "Aquisição — compra direta", valor: "62%", exemplo: true },
+      { rotulo: "Aquisição — convênio federal", valor: "31%", exemplo: true },
+      { rotulo: "Aquisição — doação", valor: "7%", exemplo: true },
+      { rotulo: "Coordenador do setor", valor: "A preencher", exemplo: false, pendente: true }
+    ]
+  },
+  {
+    id: "infraestrutura",
+    label: "Infraestrutura",
+    icon: "predio",
+    cor: "var(--oliva)",
+    artigos: ["V"],
+    intro: "Coordena portaria, recepção, segurança patrimonial, limpeza, abastecimento de energia e água, e a manutenção predial das instalações e dependências.",
+    dados: [
+      { rotulo: "Unidades sob manutenção ativa", valor: "14", exemplo: true },
+      { rotulo: "Chamados de manutenção no mês", valor: "38", exemplo: true },
+      { rotulo: "Coordenador do setor", valor: "A preencher", exemplo: false, pendente: true }
+    ]
+  },
+  {
+    id: "orcamento",
+    label: "Orçamento e Finanças",
+    icon: "moeda",
+    cor: "var(--tinta)",
+    artigos: ["VIII", "IX"],
+    intro: "Programa, orça, acompanha e executa a administração financeira e contábil, em articulação com o sistema estadual.",
+    dados: [
+      { rotulo: "Orçamento vigente (LOA)", valor: "R$ 4.200.000,00", exemplo: true },
+      { rotulo: "Cota liberada no período", valor: "R$ 3.150.000,00", exemplo: true },
+      { rotulo: "Valor empenhado", valor: "R$ 2.780.000,00", exemplo: true },
+      { rotulo: "Valor liquidado", valor: "R$ 2.410.000,00", exemplo: true },
+      { rotulo: "Valor pago", valor: "R$ 2.190.000,00", exemplo: true },
+      { rotulo: "Execução no período (pago/orçado)", valor: "52%", exemplo: true },
+      { rotulo: "Custeio", valor: "74%", exemplo: true },
+      { rotulo: "Investimento", valor: "26%", exemplo: true },
+      { rotulo: "Fonte — Tesouro estadual", valor: "83%", exemplo: true },
+      { rotulo: "Fonte — Convênio federal (Senasp/FNSP)", valor: "17%", exemplo: true },
+      { rotulo: "Maior categoria de gasto", valor: "Pessoal e encargos", exemplo: true },
+      { rotulo: "Coordenador do setor", valor: "A preencher", exemplo: false, pendente: true }
+    ]
+  },
+  {
+    id: "projetos",
+    label: "Projetos",
+    icon: "projeto_sac",
+    cor: "var(--terracota)",
+    artigos: [],
+    intro: "Projetos institucionais do DEPAF no Portfólio PCBA 2026–2027.",
+    projetos: [
+      {
+        titulo: "Aqui tem SAC",
+        icon: "projeto_sac",
+        texto: "Estruturação do modelo de atendimento no padrão SAC nas delegacias.",
+        patrocinador: "DPC Cristiano Marcos Pitangueira Mangueira",
+        gestor: "DPC Ilma Leonor Magarão Paiva",
+        gerente: "EPC Kristianne Lima Moscovits",
+        status: "Em execução",
+        progresso: 40,
+        exemplo: true
+      },
+      {
+        titulo: "Salas de Investigação Criminal",
+        icon: "projeto_investigacao",
+        texto: "Modernização e estruturação das salas de investigação criminal.",
+        patrocinador: "DPC Cristiano Marcos Pitangueira Mangueira",
+        gestor: "DPC Ilma Leonor Magarão Paiva",
+        gerente: "EPC Kristianne Lima Moscovits",
+        status: "Planejamento",
+        progresso: 15,
+        exemplo: true
+      },
+      {
+        titulo: "Requalificação da Rede Física",
+        icon: "projeto_rede",
+        texto: "Requalificação da rede física da Polícia Civil em todo o estado.",
+        patrocinador: "DPC Cristiano Marcos Pitangueira Mangueira",
+        gestor: "DPC Ilma Leonor Magarão Paiva",
+        gerente: "EPC Kristianne Lima Moscovits",
+        status: "Em execução",
+        progresso: 55,
+        exemplo: true
+      }
+    ]
+  },
+  {
+    id: "indicadores",
+    label: "Indicadores",
+    icon: "competencia_balanca",
+    cor: "var(--mostarda)",
+    artigos: [],
+    intro: "Visão consolidada — espaço pronto para os indicadores reais de acompanhamento.",
+    dados: [
+      { rotulo: "Execução orçamentária", valor: "52%", exemplo: true },
+      { rotulo: "Frota ativa", valor: "94%", exemplo: true },
+      { rotulo: "Progresso médio dos projetos", valor: "37%", exemplo: true },
+      { rotulo: "Itens de estoque abaixo do mínimo", valor: "12", exemplo: true },
+      { rotulo: "Chamados de manutenção em aberto", valor: "9", exemplo: true }
+    ]
+  }
+];
+
+const DIRECAO = {
+  nome: "Del. Cristiano Marcos Pitangueira Mangueira",
+  cargo: "Diretor do DEPAF",
+  nota: "Patrocinador dos projetos institucionais do DEPAF no Portfólio 2026–2027."
+};
+
+const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+
+const DASH_DATA = {
+  pessoal: {
+    mensal: [286,291,298,301,305,309,312,308,310,312,314,312],
+    unidade: "servidores",
+    categorias: [
+      { label: "Efetivo (cargo permanente)", valor: 210 },
+      { label: "Temporário/REDA", valor: 62 },
+      { label: "Comissionado", valor: 40 }
+    ]
+  },
+  normas: {
+    mensal: [4,5,3,6,7,5,6,4,5,8,6,5],
+    unidade: "normas emitidas",
+    categorias: [
+      { label: "Portaria", valor: 38 },
+      { label: "Ordem de serviço", valor: 16 },
+      { label: "Instrução normativa", valor: 10 }
+    ]
+  },
+  patrimonio: {
+    mensal: [1620,1655,1680,1702,1735,1760,1780,1795,1810,1822,1835,1842],
+    unidade: "itens tombados",
+    categorias: [
+      { label: "Mobiliário", valor: 640 },
+      { label: "Equip. de informática", valor: 512 },
+      { label: "Material de expediente", valor: 398 },
+      { label: "Bens apreendidos", valor: 96 },
+      { label: "Outros", valor: 196 }
+    ]
+  },
+  frota: {
+    mensal: [178,180,181,183,184,185,186,186,187,187,187,187],
+    unidade: "viaturas",
+    categorias: [
+      { label: "Compacto/passeio", valor: 94 },
+      { label: "SUV/utilitário", valor: 68 },
+      { label: "Especial/blindado", valor: 25 }
+    ]
+  },
+  infraestrutura: {
+    mensal: [30,34,29,41,36,33,38,35,37,40,36,38],
+    unidade: "chamados",
+    categorias: [
+      { label: "Elétrica", valor: 11 },
+      { label: "Hidráulica", valor: 8 },
+      { label: "Climatização", valor: 9 },
+      { label: "Segurança/portaria", valor: 6 },
+      { label: "Outros", valor: 4 }
+    ]
+  },
+  orcamento: {
+    mensal: [165,172,180,188,195,201,208,214,219,224,228,231],
+    unidade: "R$ mil pagos",
+    categorias: [
+      { label: "Pessoal e encargos", valor: 1240 },
+      { label: "Custeio geral", valor: 560 },
+      { label: "Investimento", valor: 390 }
+    ]
+  },
+  projetos: {
+    mensal: [12,15,18,20,24,27,30,32,34,36,38,40],
+    unidade: "% progresso médio",
+    categorias: [
+      { label: "Aqui tem SAC", valor: 40 },
+      { label: "Salas de Investigação Criminal", valor: 15 },
+      { label: "Requalificação da Rede Física", valor: 55 }
+    ]
+  },
+  indicadores: {
+    mensal: [48,49,50,50,51,51,52,52,52,52,52,52],
+    unidade: "% execução orçamentária",
+    categorias: [
+      { label: "Pessoal", valor: 100 },
+      { label: "Normas e Modernização", valor: 100 },
+      { label: "Patrimônio e Bens", valor: 100 },
+      { label: "Frota", valor: 94 },
+      { label: "Infraestrutura", valor: 100 },
+      { label: "Orçamento e Finanças", valor: 52 }
+    ]
+  }
+};
+
+// =====================================================================
+// 3. HELPERS DE GRÁFICO (KPIs E AGREGAÇÃO)
+// =====================================================================
+function sparklineSVG(valores, cor){
+  const w=140,h=26,pad=2;
+  const max=Math.max(...valores), min=Math.min(...valores);
+  const range=(max-min)||1;
+  const step=(w-pad*2)/(valores.length-1||1);
+  let d="";
+  valores.forEach((v,i)=>{
+    const x=pad+i*step, y=h-pad-((v-min)/range)*(h-pad*2);
+    d+=(i===0?"M":"L")+x.toFixed(1)+" "+y.toFixed(1)+" ";
+  });
+  return `<svg class="kpi-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}" stroke="${cor}"/></svg>`;
+}
+
+function deltaHTML(atual, anterior){
+  if(!anterior) return `<span class="kpi-delta flat">— sem comparativo</span>`;
+  const pct=((atual-anterior)/Math.abs(anterior))*100;
+  const cls = pct>0.5?"up":pct<-0.5?"down":"flat";
+  const seta = pct>0.5?"▲":pct<-0.5?"▼":"—";
+  return `<span class="kpi-delta ${cls}">${seta} ${Math.abs(pct).toFixed(1)}% vs mês anterior</span>`;
+}
+
+function kpiRowSVG(dd, cor){
+  const ultimo = dd.mensal[dd.mensal.length-1];
+  const penultimo = dd.mensal[dd.mensal.length-2];
+  const topCat = [...dd.categorias].sort((a,b)=>b.valor-a.valor)[0];
+  const total = dd.categorias.reduce((a,c)=>a+c.valor,0);
+  return `
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Último mês</div>
+        <div class="kpi-value">${ultimo}</div>
+        ${deltaHTML(ultimo, penultimo)}
+        ${sparklineSVG(dd.mensal, cor)}
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Acumulado 12 meses</div>
+        <div class="kpi-value">${dd.mensal.reduce((a,b)=>a+b,0)}</div>
+        <span class="kpi-delta flat">${dd.unidade}</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Categoria líder</div>
+        <div class="kpi-value" style="font-size:20px">${topCat.label}</div>
+        <span class="kpi-delta flat">${((topCat.valor/total)*100).toFixed(0)}% do total</span>
+      </div>
+    </div>`;
+}
+
+function aggregarPeriodo(mensal, periodo) {
+  if (periodo === "mensal") return mensal.map((v, i) => ({ label: MESES[i], valor: v }));
+  if (periodo === "trimestral") {
+    const out = [];
+    for (let i = 0; i < 12; i += 3) {
+      const soma = mensal.slice(i, i + 3).reduce((a, b) => a + b, 0);
+      out.push({ label: `T${i / 3 + 1}`, valor: Math.round((soma / 3) * 100) / 100 });
+    }
+    return out;
+  }
+  const soma = mensal.reduce((a, b) => a + b, 0);
+  return [{ label: "Ano", valor: Math.round((soma / 12) * 100) / 100 }];
+}
+
+const TONS = ["var(--tinta)", "var(--mostarda)", "var(--terracota)", "var(--oliva)", "var(--dourado)", "var(--vinho)"];
+function corCategoria(i) { return TONS[i % TONS.length]; }
+
+function serieCategoria(dd, catLabel) {
+  if (!catLabel || catLabel === "todas") return dd.mensal;
+  const total = dd.categorias.reduce((a, c) => a + c.valor, 0) || 1;
+  const cat = dd.categorias.find(c => c.label === catLabel);
+  if (!cat) return dd.mensal;
+  const frac = cat.valor / total;
+  return dd.mensal.map(v => Math.round(v * frac * 100) / 100);
+}
+
+// =====================================================================
+// 4. LÓGICA DA INTERFACE (DOM)
+// =====================================================================
+document.getElementById("brand-icon").innerHTML = ICONS.brasao_pcba;
+document.getElementById("footer-selo").innerHTML = seloSVG("DEPAF", "DOSSIÊ");
+
+document.getElementById("direcao-card").innerHTML = `
+  <div class="card-label">DIREÇÃO ATUAL</div>
+  <h3>${DIRECAO.nome}</h3>
+  <p>${DIRECAO.nota}</p>
+`;
+
+const hub = document.getElementById("hub");
+function buildHub() {
+  hub.innerHTML = "";
+  const size = hub.clientWidth;
+  const center = size / 2;
+  const radius = size * 0.37;
+
+  const ringsSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  ringsSvg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+  ringsSvg.classList.add("rings");
+  let ringsMarkup = "";
+  [0.2, 0.37, 0.46].forEach(f => {
+    ringsMarkup += `<circle cx="${center}" cy="${center}" r="${size * f}" fill="none" stroke="currentColor" stroke-width="1" opacity="0.4" />`;
+  });
+  for (let deg = 0; deg < 360; deg += 15) {
+    const rad = (deg * Math.PI) / 180;
+    const long = deg % 45 === 0;
+    const r1 = size * (long ? 0.46 : 0.44);
+    const r2 = size * 0.48;
+    const x1 = center + r1 * Math.cos(rad), y1 = center + r1 * Math.sin(rad);
+    const x2 = center + r2 * Math.cos(rad), y2 = center + r2 * Math.sin(rad);
+    ringsMarkup += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width="${long ? 1.5 : 1}" opacity="0.5" />`;
+  }
+  const n = PORTAIS.length;
+  PORTAIS.forEach((p, i) => {
+    const angle = -90 + i * (360 / n);
+    const rad = (angle * Math.PI) / 180;
+    const x = center + radius * Math.cos(rad);
+    const y = center + radius * Math.sin(rad);
+    const innerR = size * 0.09;
+    const x0 = center + innerR * Math.cos(rad), y0 = center + innerR * Math.sin(rad);
+    ringsMarkup += `<line x1="${x0}" y1="${y0}" x2="${x}" y2="${y}" stroke="currentColor" stroke-width="1.5" opacity="0.7" />`;
+  });
+  // anel vivo — dashes que giram lentamente, dão pulso de instrumento à rosa
+  ringsMarkup += `<circle class="anel-vivo" cx="${center}" cy="${center}" r="${(size * 0.49).toFixed(1)}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 10" opacity="0.55" />`;
+  // pontos cardeais
+  const card = size * 0.49;
+  const cardeais = [["N", 0, -card], ["L", card, 0], ["S", 0, card], ["O", -card, 0]];
+  cardeais.forEach(([txt, dx, dy]) => {
+    ringsMarkup += `<text class="cardeal" x="${(center + dx).toFixed(1)}" y="${(center + dy + 4).toFixed(1)}" text-anchor="middle">${txt}</text>`;
+  });
+  ringsSvg.innerHTML = ringsMarkup;
+  hub.appendChild(ringsSvg);
+
+  const brasao = document.createElement("div");
+  brasao.className = "hub-brasao";
+  brasao.innerHTML = ICONS.brasao_pcba;
+  hub.appendChild(brasao);
+
+  PORTAIS.forEach((p, i) => {
+    const angle = -90 + i * (360 / n);
+    const rad = (angle * Math.PI) / 180;
+    const x = center + radius * Math.cos(rad);
+    const y = center + radius * Math.sin(rad);
+
+    const node = document.createElement("div");
+    node.className = "hub-node";
+    node.style.left = `${x}px`;
+    node.style.top = `${y}px`;
+    node.style.setProperty("--node-color", p.cor);
+    node.innerHTML = `
+      <div class="dot">${ICONS[p.icon]}</div>
+      <div class="label font-mono">${p.label}</div>
+    `;
+    node.addEventListener("click", () => abrirTela(p.id));
+    hub.appendChild(node);
+  });
+}
+
+buildHub();
+window.addEventListener("resize", () => {
+  clearTimeout(window._hubResizeT);
+  window._hubResizeT = setTimeout(buildHub, 150);
+});
+
+const telaInicio = document.getElementById("tela-inicio");
+const telaConteudo = document.getElementById("tela-conteudo");
+const voltarBtn = document.getElementById("voltar-btn");
+let dashState = { tipoEvolucao: "bar", tipoComp: "donut" };
+
+function abrirTela(id) {
+  const p = PORTAIS.find(x => x.id === id);
+  if (!p) return;
+
+  let corpoGeral = "";
+
+  if (p.dados) {
+    corpoGeral += `<div class="dados-grid">`;
+    p.dados.forEach(d => {
+      corpoGeral += `
+        <div class="dado">
+          <div class="valor">${d.valor}</div>
+          <div class="rotulo">${d.rotulo}</div>
+          ${d.exemplo ? `<span class="tag tag-exemplo">EXEMPLO ILUSTRATIVO</span>` : ""}
+          ${d.pendente ? `<span class="tag tag-pendente">A PREENCHER</span>` : ""}
+        </div>
+      `;
+    });
+    corpoGeral += `</div>`;
+  }
+
+  if (p.projetos) {
+    p.projetos.forEach(proj => {
+      corpoGeral += `
+        <div class="projeto-card">
+          <div class="top">
+            <span class="icon">${ICONS[proj.icon]}</span>
+            <div>
+              <h3>${proj.titulo}</h3>
+              <p class="texto">${proj.texto}</p>
+            </div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-track"><div class="progress-fill" style="width:${proj.progresso}%"></div></div>
+            <span class="progress-label font-mono">${proj.status} · ${proj.progresso}%</span>
+          </div>
+          ${proj.exemplo ? `<span class="tag tag-exemplo">STATUS E PROGRESSO SÃO EXEMPLO ILUSTRATIVO</span>` : ""}
+          <div class="equipe">
+            <span>PATROCINADOR: ${proj.patrocinador}</span>
+            <span>GESTOR DE NEGÓCIO: ${proj.gestor}</span>
+            <span>GERENTE DE PROJETO: ${proj.gerente}</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  const dd = DASH_DATA[p.id];
+  let corpoDash = `<p class="tela-intro">Dashboard ainda não configurado para este portal.</p>`;
+  if (dd) {
+    const catOptions = dd.categorias.map(c => `<option value="${c.label}">${c.label}</option>`).join("");
+    corpoDash = `
+      <div id="dash-kpis"></div>
+      <div class="filter-chips" id="dash-chips"></div>
+      <div class="dash-filtros">
+        <div class="dash-filtro">
+          <label>PERÍODO</label>
+          <select id="dash-filtro-periodo">
+            <option value="mensal">Mensal</option>
+            <option value="trimestral">Trimestral</option>
+            <option value="anual">Anual</option>
+          </select>
+        </div>
+        <div class="dash-filtro">
+          <label>CATEGORIA / SETOR</label>
+          <select id="dash-filtro-categoria">
+            <option value="todas">Todas as categorias</option>
+            ${catOptions}
+          </select>
+        </div>
+      </div>
+      <div class="dash-export-row">
+        <button class="btn-exportar-pbi" id="btn-exportar-pbi" title="Baixa a base inteira em formato tidy (CSV) + tema + guia, pronta pro Power BI">⬇ DADOS P/ POWER BI</button>
+        <button class="btn-exportar-xlsx" id="btn-exportar-xlsx">⬇ EXPORTAR PARA EXCEL</button>
+      </div>
+      <div class="dash-charts">
+        <div class="dash-chart-box">
+          <div class="dash-chart-head">
+            <h4>EVOLUÇÃO — ${dd.unidade.toUpperCase()}</h4>
+            <div class="dash-toggle" id="toggle-tipo-evolucao">
+              <button class="dash-toggle-btn active" data-val="bar">BARRAS</button>
+              <button class="dash-toggle-btn" data-val="line">LINHA</button>
+            </div>
+          </div>
+          <div id="dash-chart-linha"></div>
+        </div>
+        <div class="dash-chart-box">
+          <div class="dash-chart-head">
+            <h4>COMPOSIÇÃO POR CATEGORIA</h4>
+            <div class="dash-toggle" id="toggle-tipo-comp">
+              <button class="dash-toggle-btn active" data-val="donut">ROSCA</button>
+              <button class="dash-toggle-btn" data-val="ranking">RANKING</button>
+            </div>
+          </div>
+          <div id="dash-chart-donut"></div>
+        </div>
+      </div>
+      <table class="dash-tabela">
+        <thead><tr><th class="sortable" data-col="0">CATEGORIA</th><th class="sortable" data-col="1">VALOR</th><th class="sortable" data-col="2">% DO TOTAL</th></tr></thead>
+        <tbody id="dash-tabela-body"></tbody>
+      </table>
+      <span class="tag tag-exemplo" style="margin-top:12px">DADOS EXEMPLO ILUSTRATIVO — SUBSTITUIR PELA BASE REAL</span>
+    `;
+  }
+
+  telaConteudo.innerHTML = `
+    <div class="tela-head" style="--tela-color:${p.cor}">
+      <span class="icon-grande">${ICONS[p.icon]}</span>
+      <div>
+        <h2>${p.label}</h2>
+        ${p.artigos.length ? `<div class="artigos">ART. 27${p.artigos.length > 1 ? ", INCISOS" : ", INCISO"} ${p.artigos.join(", ")}</div>` : ""}
+      </div>
+    </div>
+    <p class="tela-intro">${p.intro}</p>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="geral">VISÃO GERAL</button>
+      <button class="tab-btn" data-tab="dashboard">DASHBOARD</button>
+    </div>
+    <div class="tab-panel" id="tab-geral">${corpoGeral}</div>
+    <div class="tab-panel" id="tab-dashboard" hidden>${corpoDash}</div>
+  `;
+
+  telaConteudo.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      telaConteudo.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const alvo = btn.dataset.tab;
+      telaConteudo.querySelector("#tab-geral").hidden = alvo !== "geral";
+      telaConteudo.querySelector("#tab-dashboard").hidden = alvo !== "dashboard";
+    });
+  });
+
+  if (dd) {
+    dashState = { tipoEvolucao: "bar", tipoComp: "donut" };
+    const selPeriodo = document.getElementById("dash-filtro-periodo");
+    const selCategoria = document.getElementById("dash-filtro-categoria");
+    const render = () => atualizarDashboard(p.id, selPeriodo.value, selCategoria.value);
+    selPeriodo.addEventListener("change", render);
+    selCategoria.addEventListener("change", render);
+    const btnExportar = document.getElementById("btn-exportar-xlsx");
+    if (btnExportar) btnExportar.addEventListener("click", () => exportarDashboardExcel(p.id));
+    const btnPbi = document.getElementById("btn-exportar-pbi");
+    if (btnPbi) btnPbi.addEventListener("click", () => exportarPowerBI());
+
+    document.querySelectorAll("#toggle-tipo-evolucao .dash-toggle-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#toggle-tipo-evolucao .dash-toggle-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        dashState.tipoEvolucao = btn.dataset.val;
+        render();
+      });
+    });
+    document.querySelectorAll("#toggle-tipo-comp .dash-toggle-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#toggle-tipo-comp .dash-toggle-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        dashState.tipoComp = btn.dataset.val;
+        render();
+      });
+    });
+
+    render();
+  }
+
+  telaConteudo.style.setProperty("--tela-color", p.cor);
+  telaConteudo.hidden = false;
+  telaInicio.style.display = "none";
+  voltarBtn.classList.add("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function atualizarDashboard(portalId, periodo, categoriaFiltro) {
+  const p = PORTAIS.find(x => x.id === portalId);
+  const dd = DASH_DATA[portalId];
+  if (!dd) return;
+  
+  const categoriaSelecionada = categoriaFiltro && categoriaFiltro !== "todas" ? categoriaFiltro : null;
+  const serie = serieCategoria(dd, categoriaSelecionada);
+  const pontos = aggregarPeriodo(serie, periodo);
+  const idxSel = categoriaSelecionada ? dd.categorias.findIndex(c => c.label === categoriaSelecionada) : -1;
+  const corEvolucao = idxSel >= 0 ? corCategoria(idxSel) : p.cor;
+
+  document.getElementById("dash-kpis").innerHTML = kpiRowSVG(dd, corEvolucao);
+  const chips = document.getElementById("dash-chips");
+  let chipsHTML = "";
+  if(periodo !== "mensal") chipsHTML += `<span class="filter-chip">${periodo} <button onclick="document.getElementById('dash-filtro-periodo').value='mensal';atualizarDashboard('${portalId}','mensal',document.getElementById('dash-filtro-categoria').value)">✕</button></span>`;
+  if(categoriaSelecionada) chipsHTML += `<span class="filter-chip">${categoriaSelecionada} <button onclick="document.getElementById('dash-filtro-categoria').value='todas';atualizarDashboard('${portalId}',document.getElementById('dash-filtro-periodo').value,'todas')">✕</button></span>`;
+  chips.innerHTML = chipsHTML;
+
+  const elLinha = document.getElementById("dash-chart-linha");
+  elLinha.innerHTML = dashState.tipoEvolucao === "line"
+    ? lineChartSVG(pontos, corEvolucao)
+    : barChartSVG(pontos, corEvolucao);
+
+  const elComp = document.getElementById("dash-chart-donut");
+  elComp.innerHTML = dashState.tipoComp === "ranking"
+    ? rankingChartSVG(dd.categorias, categoriaSelecionada)
+    : donutChartSVG(dd.categorias, categoriaSelecionada);
+
+  function alternarFiltro(clicado) {
+    const selCategoria = document.getElementById("dash-filtro-categoria");
+    const novoValor = selCategoria.value === clicado ? "todas" : clicado;
+    selCategoria.value = novoValor;
+    atualizarDashboard(portalId, document.getElementById("dash-filtro-periodo").value, novoValor);
+  }
+
+  elComp.querySelectorAll("[data-cat]").forEach(el => {
+    el.addEventListener("click", () => alternarFiltro(el.dataset.cat));
+  });
+
+  const total = dd.categorias.reduce((a, c) => a + c.valor, 0) || 1;
+  const corpo = dd.categorias.map(c => {
+    const pct = ((c.valor / total) * 100).toFixed(1);
+    const dim = categoriaSelecionada && categoriaSelecionada !== c.label;
+    const sel = categoriaSelecionada === c.label;
+    return `<tr class="${dim ? "dim" : ""}" data-cat="${c.label}" style="${sel ? "font-weight:600;" : ""}"><td>${c.label}</td><td class="num">${c.valor}</td><td class="num">${pct}%</td></tr>`;
+  }).join("");
+  const tbody = document.getElementById("dash-tabela-body");
+  tbody.innerHTML = corpo;
+  tbody.querySelectorAll("tr[data-cat]").forEach(tr => {
+    tr.addEventListener("click", () => alternarFiltro(tr.dataset.cat));
+  });
+  document.querySelectorAll(".dash-tabela th.sortable").forEach(th=>{
+    th.onclick = ()=>{
+      const col = +th.dataset.col;
+      const asc = !th.classList.contains("sort-asc");
+      document.querySelectorAll(".dash-tabela th").forEach(t=>t.classList.remove("sort-asc","sort-desc"));
+      th.classList.add(asc?"sort-asc":"sort-desc");
+      const rows = [...tbody.querySelectorAll("tr")];
+      rows.sort((a,b)=>{
+        const av=a.children[col].textContent.replace("%",""), bv=b.children[col].textContent.replace("%","");
+        const an=parseFloat(av), bn=parseFloat(bv);
+        const cmp = isNaN(an) ? av.localeCompare(bv) : an-bn;
+        return asc?cmp:-cmp;
+      });
+      rows.forEach(r=>tbody.appendChild(r));
+    };
+  });
+}
+
+function fecharTela() {
+  telaConteudo.hidden = true;
+  telaInicio.style.display = "";
+  voltarBtn.classList.remove("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+voltarBtn.addEventListener("click", fecharTela);
+document.getElementById("brand-home-btn").addEventListener("click", fecharTela);
+
+// =====================================================================
+// 5. EXPORTADOR EXCEL — DEPAF
+// =====================================================================
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(bytes) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function u16(v) { return [v & 0xFF, (v >>> 8) & 0xFF]; }
+function u32(v) { return [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF]; }
+function strBytes(s) { return Array.from(new TextEncoder().encode(s)); }
+
+class ZipBuilder {
+  constructor() { this.files = []; }
+  addFile(name, content) {
+    const bytes = typeof content === "string" ? new TextEncoder().encode(content) : content;
+    this.files.push({ name, bytes });
+  }
+  build() {
+    const DOSTIME = 0, DOSDATE = 0x2158;
+    let localChunks = [], centralChunks = [], offset = 0;
+    for (const f of this.files) {
+      const nameBytes = strBytes(f.name);
+      const crc = crc32(f.bytes);
+      const size = f.bytes.length;
+      const local = [
+        ...u32(0x04034b50), ...u16(20), ...u16(0), ...u16(0),
+        ...u16(DOSTIME), ...u16(DOSDATE),
+        ...u32(crc), ...u32(size), ...u32(size),
+        ...u16(nameBytes.length), ...u16(0), ...nameBytes
+      ];
+      const localHeaderOffset = offset;
+      localChunks.push(new Uint8Array(local));
+      localChunks.push(f.bytes);
+      offset += local.length + f.bytes.length;
+      const central = [
+        ...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0), ...u16(0),
+        ...u16(DOSTIME), ...u16(DOSDATE),
+        ...u32(crc), ...u32(size), ...u32(size),
+        ...u16(nameBytes.length), ...u16(0), ...u16(0),
+        ...u16(0), ...u16(0), ...u32(0),
+        ...u32(localHeaderOffset), ...nameBytes
+      ];
+      centralChunks.push(new Uint8Array(central));
+    }
+    const centralStart = offset;
+    let centralSize = 0;
+    for (const c of centralChunks) centralSize += c.length;
+    const eocd = new Uint8Array([
+      ...u32(0x06054b50), ...u16(0), ...u16(0),
+      ...u16(this.files.length), ...u16(this.files.length),
+      ...u32(centralSize), ...u32(centralStart), ...u16(0)
+    ]);
+    const total = offset + centralSize + eocd.length;
+    const out = new Uint8Array(total);
+    let p = 0;
+    for (const chunk of localChunks) { out.set(chunk, p); p += chunk.length; }
+    for (const chunk of centralChunks) { out.set(chunk, p); p += chunk.length; }
+    out.set(eocd, p);
+    return out;
+  }
+}
+
+function xmlEsc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+}
+function colLetter(n) {
+  let s = "";
+  while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); }
+  return s;
+}
+function ref(col, row) { return colLetter(col) + row; }
+
+const XLSX_COR_MAP = { "var(--tinta)": "14507A", "var(--mostarda)": "E3A424", "var(--terracota)": "C0492B", "var(--oliva)": "3D7A50", "var(--dourado)": "C9A96E", "var(--vinho)": "7A2E3F" };
+const XLSX_PALETA_HEX = ["14507A", "E3A424", "C0492B", "3D7A50", "C9A96E", "7A2E3F"];
+function xlsxCorHex(cssVar) { return XLSX_COR_MAP[cssVar] || "1B3A5C"; }
+
+function xlsxFormatoValor(unidade) {
+  if (/R\$/.test(unidade)) return { code: '"R$" #,##0.00', tipo: "moeda" };
+  if (/%/.test(unidade)) return { code: '0.0"%"', tipo: "percentual" };
+  return { code: "#,##0.##", tipo: "numero" };
+}
+
+function buildRow(rowIndex, cells, boldCols) {
+  boldCols = boldCols || [];
+  let xml = `<row r="${rowIndex}">`;
+  cells.forEach(c => {
+    if (c.value === undefined || c.value === null || c.value === "") return;
+    const cellRef = ref(c.col, rowIndex);
+    const styleIdx = c.style !== undefined ? c.style : (boldCols.includes(c.col) ? 1 : null);
+    const style = styleIdx !== null ? ` s="${styleIdx}"` : "";
+    if (c.type === "n") {
+      xml += `<c r="${cellRef}"${style}><v>${c.value}</v></c>`;
+    } else if (c.type === "s") {
+      xml += `<c r="${cellRef}" t="inlineStr"${style}><is><t xml:space="preserve">${xmlEsc(c.value)}</t></is></c>`;
+    } else if (c.type === "f") {
+      xml += `<c r="${cellRef}"${style}><f>${xmlEsc(c.value)}</f></c>`;
+    }
+  });
+  xml += `</row>`;
+  return xml;
+}
+
+const XLSX_CONTENT_TYPES = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+<Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+<Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>
+<Override PartName="/xl/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
+<Override PartName="/xl/charts/chart2.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
+</Types>`;
+
+const XLSX_RELS_ROOT = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>`;
+
+// ===================== ESTILOS (cores, fontes, bordas, alinhamento) =====================
+function xlsxStyles(accentHex) {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<numFmts count="3">
+<numFmt numFmtId="164" formatCode="&quot;R$&quot;\\ #,##0.00"/>
+<numFmt numFmtId="165" formatCode="0.0&quot;%&quot;"/>
+<numFmt numFmtId="166" formatCode="#,##0.##"/>
+</numFmts>
+<fonts count="7">
+<font><sz val="11"/><color rgb="FF171410"/><name val="Calibri"/></font>
+<font><b/><sz val="11"/><color rgb="FF171410"/><name val="Calibri"/></font>
+<font><b/><sz val="11"/><color rgb="FFFBF7EC"/><name val="Calibri"/></font>
+<font><b/><sz val="20"/><color rgb="FFFBF7EC"/><name val="Calibri"/></font>
+<font><b/><sz val="8"/><color rgb="FF6B6353"/><name val="Consolas"/></font>
+<font><b/><sz val="18"/><color rgb="FF171410"/><name val="Calibri"/></font>
+<font><sz val="10"/><color rgb="FF6B6353"/><name val="Consolas"/></font>
+</fonts>
+<fills count="7">
+<fill><patternFill patternType="none"/></fill>
+<fill><patternFill patternType="gray125"/></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF171410"/><bgColor indexed="64"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF${accentHex}"/><bgColor indexed="64"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFF3ECDA"/><bgColor indexed="64"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFEFE7D2"/><bgColor indexed="64"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFBF7EC"/><bgColor indexed="64"/></patternFill></fill>
+</fills>
+<borders count="3">
+<border><left/><right/><top/><bottom/><diagonal/></border>
+<border><left style="thin"><color rgb="FFD8CDAE"/></left><right style="thin"><color rgb="FFD8CDAE"/></right><top style="thin"><color rgb="FFD8CDAE"/></top><bottom style="thin"><color rgb="FFD8CDAE"/></bottom></border>
+<border><bottom style="medium"><color rgb="FF171410"/></bottom></border>
+</borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="17">
+<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
+<xf numFmtId="0" fontId="3" fillId="3" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+<xf numFmtId="0" fontId="6" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+<xf numFmtId="0" fontId="2" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+<xf numFmtId="0" fontId="2" fillId="3" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0" fillId="6" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+<xf numFmtId="166" fontId="0" fillId="6" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>
+<xf numFmtId="166" fontId="0" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>
+<xf numFmtId="164" fontId="0" fillId="6" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>
+<xf numFmtId="164" fontId="0" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>
+<xf numFmtId="165" fontId="0" fillId="6" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>
+<xf numFmtId="165" fontId="0" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>
+<xf numFmtId="0" fontId="4" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+<xf numFmtId="166" fontId="5" fillId="5" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="center"/></xf>
+<xf numFmtId="0" fontId="5" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>
+</cellXfs>
+<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+</styleSheet>`;
+}
+
+// índices de estilo nomeados (batem com a ordem em cellXfs acima)
+const ST = { TITLE:2, SUB:3, SECTION:4, THEAD:5, TXT:6, TXT_B:7, NUM:8, NUM_B:9,
+  MOEDA:10, MOEDA_B:11, PCT:12, PCT_B:13, KLAB:14, KVAL:15, KTXT:16 };
+
+function stValor(unidade) {
+  const tipo = xlsxFormatoValor(unidade).tipo;
+  if (tipo === "moeda") return [ST.MOEDA, ST.MOEDA_B];
+  if (tipo === "percentual") return [ST.PCT, ST.PCT_B];
+  return [ST.NUM, ST.NUM_B];
+}
+
+const XLSX_RELS_ROOT2 = XLSX_RELS_ROOT;
+
+function xlsxWorkbookXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<fileVersion appName="xl"/><workbookPr defaultThemeVersion="124226"/>
+<sheets>
+<sheet name="Painel" sheetId="1" r:id="rId1"/>
+<sheet name="Base" sheetId="2" r:id="rId2"/>
+</sheets>
+</workbook>`;
+}
+const XLSX_WORKBOOK_RELS = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>
+<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`;
+
+const XLSX_SHEET1_RELS = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>
+</Relationships>`;
+
+const XLSX_DRAWING_RELS = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml"/>
+<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart2.xml"/>
+</Relationships>`;
+
+function anchorChart(fromCol, fromRow, toCol, toRow, id, nome, rid) {
+  return `<xdr:twoCellAnchor>
+<xdr:from><xdr:col>${fromCol}</xdr:col><xdr:colOff>38100</xdr:colOff><xdr:row>${fromRow}</xdr:row><xdr:rowOff>19050</xdr:rowOff></xdr:from>
+<xdr:to><xdr:col>${toCol}</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${toRow}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>
+<xdr:graphicFrame macro="">
+<xdr:nvGraphicFramePr><xdr:cNvPr id="${id}" name="${nome}"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr>
+<xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm>
+<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+<c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="${rid}"/>
+</a:graphicData></a:graphic>
+</xdr:graphicFrame>
+<xdr:clientData/>
+</xdr:twoCellAnchor>`;
+}
+function xlsxDrawingXml(nCats) {
+  const compTop = 25;                      // linha 26 (0-idx 25) = cabeçalho composição
+  const compBot = 27 + nCats + 2;          // folga abaixo
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+${anchorChart(4, 10, 12, 24, 2, "Evolucao", "rId1")}
+${anchorChart(4, compTop, 12, compBot, 3, "Composicao", "rId2")}
+</xdr:wsDr>`;
+}
+
+function xlsxBarChartXml(unidade, corHex, formatoCode) {
+  const fmt = xmlEsc(formatoCode);
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<c:roundedCorners val="0"/>
+<c:chart>
+<c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="1300" b="1"><a:solidFill><a:srgbClr val="171410"/></a:solidFill><a:latin typeface="Calibri"/></a:defRPr></a:pPr><a:r><a:rPr lang="pt-BR" sz="1300" b="1"><a:solidFill><a:srgbClr val="171410"/></a:solidFill></a:rPr><a:t>${xmlEsc("Evolução mensal — " + unidade)}</a:t></a:r></a:p></c:rich></c:tx><c:overlay val="0"/></c:title>
+<c:autoTitleDeleted val="0"/>
+<c:plotArea><c:layout/>
+<c:barChart>
+<c:barDir val="col"/><c:grouping val="clustered"/><c:varyColors val="0"/>
+<c:ser>
+<c:idx val="0"/><c:order val="0"/>
+<c:tx><c:strRef><c:f>Painel!$C$11</c:f><c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>Valor</c:v></c:pt></c:strCache></c:strRef></c:tx>
+<c:spPr><a:solidFill><a:srgbClr val="${corHex}"/></a:solidFill><a:ln w="12700"><a:solidFill><a:srgbClr val="171410"/></a:solidFill></a:ln></c:spPr>
+<c:dLbls><c:numFmt formatCode="${fmt}" sourceLinked="0"/><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr><c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="800"/></a:pPr><a:endParaRPr lang="pt-BR"/></a:p></c:txPr><c:showLegendKey val="0"/><c:showVal val="1"/><c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/></c:dLbls>
+<c:cat><c:strRef><c:f>Painel!$B$12:$B$23</c:f></c:strRef></c:cat>
+<c:val><c:numRef><c:f>Painel!$C$12:$C$23</c:f></c:numRef></c:val>
+</c:ser>
+<c:gapWidth val="55"/>
+<c:axId val="111111111"/><c:axId val="222222222"/>
+</c:barChart>
+<c:catAx><c:axId val="111111111"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="b"/><c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="800"/></a:pPr><a:endParaRPr lang="pt-BR"/></a:p></c:txPr><c:crossAx val="222222222"/></c:catAx>
+<c:valAx><c:axId val="222222222"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="l"/><c:majorGridlines><c:spPr><a:ln><a:solidFill><a:srgbClr val="D8CDAE"/></a:solidFill></a:ln></c:spPr></c:majorGridlines><c:numFmt formatCode="${fmt}" sourceLinked="0"/><c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="800"/></a:pPr><a:endParaRPr lang="pt-BR"/></a:p></c:txPr><c:crossAx val="111111111"/></c:valAx>
+</c:plotArea>
+<c:plotVisOnly val="1"/>
+</c:chart>
+<c:spPr><a:solidFill><a:srgbClr val="FBF7EC"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="171410"/></a:solidFill></a:ln></c:spPr>
+</c:chartSpace>`;
+}
+
+function xlsxPieChartXml(nCategorias) {
+  const first = 27, last = 26 + nCategorias;
+  let dPts = "";
+  for (let i = 0; i < nCategorias; i++) {
+    const cor = XLSX_PALETA_HEX[i % XLSX_PALETA_HEX.length];
+    dPts += `<c:dPt><c:idx val="${i}"/><c:bubble3D val="0"/><c:spPr><a:solidFill><a:srgbClr val="${cor}"/></a:solidFill><a:ln w="19050"><a:solidFill><a:srgbClr val="F2ECDB"/></a:solidFill></a:ln></c:spPr></c:dPt>`;
+  }
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<c:roundedCorners val="0"/>
+<c:chart>
+<c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="1300" b="1"><a:solidFill><a:srgbClr val="171410"/></a:solidFill></a:defRPr></a:pPr><a:r><a:rPr lang="pt-BR" sz="1300" b="1"><a:solidFill><a:srgbClr val="171410"/></a:solidFill></a:rPr><a:t>Composição por categoria</a:t></a:r></a:p></c:rich></c:tx><c:overlay val="0"/></c:title>
+<c:autoTitleDeleted val="0"/>
+<c:plotArea><c:layout/>
+<c:pieChart>
+<c:varyColors val="1"/>
+<c:ser>
+<c:idx val="0"/><c:order val="0"/>
+${dPts}
+<c:dLbls><c:numFmt formatCode="0.0%" sourceLinked="0"/><c:spPr><a:noFill/></c:spPr><c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="900" b="1"><a:solidFill><a:srgbClr val="FBF7EC"/></a:solidFill></a:defRPr></a:pPr><a:endParaRPr lang="pt-BR"/></a:p></c:txPr><c:showLegendKey val="0"/><c:showVal val="0"/><c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="1"/><c:showBubbleSize val="0"/></c:dLbls>
+<c:cat><c:strRef><c:f>Painel!$B$${first}:$B$${last}</c:f></c:strRef></c:cat>
+<c:val><c:numRef><c:f>Painel!$C$${first}:$C$${last}</c:f></c:numRef></c:val>
+</c:ser>
+<c:firstSliceAng val="0"/>
+</c:pieChart>
+</c:plotArea>
+<c:legend><c:legendPos val="b"/><c:overlay val="0"/><c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="900"/></a:pPr><a:endParaRPr lang="pt-BR"/></a:p></c:txPr></c:legend>
+<c:plotVisOnly val="1"/>
+</c:chart>
+<c:spPr><a:solidFill><a:srgbClr val="FBF7EC"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="171410"/></a:solidFill></a:ln></c:spPr>
+</c:chartSpace>`;
+}
+
+function xlsxSerieCategoria(dd, catLabel) {
+  if (!catLabel) return dd.mensal;
+  const total = dd.categorias.reduce((a, c) => a + c.valor, 0) || 1;
+  const cat = dd.categorias.find(c => c.label === catLabel);
+  if (!cat) return dd.mensal;
+  const frac = cat.valor / total;
+  return dd.mensal.map(v => Math.round(v * frac * 100) / 100);
+}
+
+// ===================== PAINEL (sheet1) =====================
+function xlsxBuildDashboardSheet(p, dd) {
+  const unidade = dd.unidade;
+  const [svNum, svBand] = stValor(unidade);
+  const total = dd.categorias.reduce((a, c) => a + c.valor, 0) || 1;
+  const ultimo = dd.mensal[dd.mensal.length - 1];
+  const soma = dd.mensal.reduce((a, b) => a + b, 0);
+  const topCat = [...dd.categorias].sort((a, b) => b.valor - a.valor)[0];
+
+  let rows = "";
+  // título + subtítulo
+  rows += buildRow(2, [{ col: 2, type: "s", value: "DEPAF · " + p.label, style: ST.TITLE }]);
+  rows += buildRow(3, [{ col: 2, type: "s", value: "Unidade: " + unidade + "  ·  dados EXEMPLO ilustrativo — substituir pela base real", style: ST.SUB }]);
+  // KPIs (tabela limpa)
+  rows += buildRow(5, [{ col: 2, type: "s", value: "PANORAMA", style: ST.SECTION }]);
+  rows += buildRow(6, [{ col: 2, type: "s", value: "Último mês", style: ST.KLAB }, { col: 3, type: "n", value: ultimo, style: ST.KVAL }]);
+  rows += buildRow(7, [{ col: 2, type: "s", value: "Acumulado 12 meses", style: ST.KLAB }, { col: 3, type: "n", value: soma, style: ST.KVAL }]);
+  rows += buildRow(8, [{ col: 2, type: "s", value: "Categoria líder", style: ST.KLAB }, { col: 3, type: "s", value: topCat.label + " (" + Math.round(topCat.valor / total * 100) + "%)", style: ST.KTXT }]);
+  // evolução mensal
+  rows += buildRow(10, [{ col: 2, type: "s", value: "EVOLUÇÃO MENSAL", style: ST.SECTION }]);
+  rows += buildRow(11, [{ col: 2, type: "s", value: "MÊS", style: ST.THEAD }, { col: 3, type: "s", value: "VALOR", style: ST.THEAD }]);
+  for (let i = 0; i < 12; i++) {
+    const band = i % 2 === 1;
+    rows += buildRow(12 + i, [
+      { col: 2, type: "s", value: MESES[i], style: band ? ST.TXT_B : ST.TXT },
+      { col: 3, type: "n", value: dd.mensal[i], style: band ? svBand : svNum }
+    ]);
+  }
+  // composição por categoria
+  rows += buildRow(25, [{ col: 2, type: "s", value: "COMPOSIÇÃO POR CATEGORIA", style: ST.SECTION }]);
+  rows += buildRow(26, [{ col: 2, type: "s", value: "CATEGORIA", style: ST.THEAD }, { col: 3, type: "s", value: "VALOR", style: ST.THEAD }, { col: 4, type: "s", value: "% DO TOTAL", style: ST.THEAD }]);
+  dd.categorias.forEach((c, i) => {
+    const band = i % 2 === 1;
+    const pct = Math.round(c.valor / total * 1000) / 10;
+    rows += buildRow(27 + i, [
+      { col: 2, type: "s", value: c.label, style: band ? ST.TXT_B : ST.TXT },
+      { col: 3, type: "n", value: c.valor, style: band ? svBand : svNum },
+      { col: 4, type: "n", value: pct, style: band ? ST.PCT_B : ST.PCT }
+    ]);
+  });
+
+  const merges = [
+    "B2:L2", "B3:L3", "B5:D5",
+    "C6:D6", "C7:D7", "C8:D8",
+    "B10:C10", "B25:D25"
+  ].map(r => `<mergeCell ref="${r}"/>`).join("");
+
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<sheetViews><sheetView tabSelected="1" showGridLines="0" workbookViewId="0"/></sheetViews>
+<sheetFormatPr defaultRowHeight="15"/>
+<cols>
+<col min="1" max="1" width="2.5" customWidth="1"/>
+<col min="2" max="2" width="34" customWidth="1"/>
+<col min="3" max="3" width="15" customWidth="1"/>
+<col min="4" max="4" width="14" customWidth="1"/>
+<col min="5" max="12" width="9.5" customWidth="1"/>
+</cols>
+<sheetData>${rows}</sheetData>
+<mergeCells count="8">${merges}</mergeCells>
+<drawing r:id="rId1"/>
+</worksheet>`;
+}
+
+// ===================== BASE (sheet2) — formato longo/tidy =====================
+function xlsxBuildDadosSheet(dd) {
+  const unidade = dd.unidade;
+  const [svNum, svBand] = stValor(unidade);
+  const series = ["Todas", ...dd.categorias.map(c => c.label)];
+  let rows = "";
+  rows += buildRow(1, [
+    { col: 1, type: "s", value: "MÊS", style: ST.THEAD },
+    { col: 2, type: "s", value: "SÉRIE", style: ST.THEAD },
+    { col: 3, type: "s", value: "VALOR", style: ST.THEAD },
+    { col: 4, type: "s", value: "UNIDADE", style: ST.THEAD }
+  ]);
+  let r = 2, k = 0;
+  series.forEach(serie => {
+    const vals = xlsxSerieCategoria(dd, serie === "Todas" ? null : serie);
+    vals.forEach((v, m) => {
+      const band = k % 2 === 1;
+      rows += buildRow(r, [
+        { col: 1, type: "s", value: MESES[m], style: band ? ST.TXT_B : ST.TXT },
+        { col: 2, type: "s", value: serie, style: band ? ST.TXT_B : ST.TXT },
+        { col: 3, type: "n", value: v, style: band ? svBand : svNum },
+        { col: 4, type: "s", value: unidade, style: band ? ST.TXT_B : ST.TXT }
+      ]);
+      r++; k++;
+    });
+  });
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<sheetViews><sheetView showGridLines="0" workbookViewId="0"/></sheetViews>
+<sheetFormatPr defaultRowHeight="15"/>
+<cols>
+<col min="1" max="1" width="10" customWidth="1"/>
+<col min="2" max="2" width="34" customWidth="1"/>
+<col min="3" max="3" width="14" customWidth="1"/>
+<col min="4" max="4" width="22" customWidth="1"/>
+</cols>
+<sheetData>${rows}</sheetData>
+</worksheet>`;
+}
+
+function xlsxBuildWorkbookBytes(p, dd) {
+  const corHex = xlsxCorHex(p.cor);
+  const formatoCode = xlsxFormatoValor(dd.unidade).code;
+  const zip = new ZipBuilder();
+  zip.addFile("[Content_Types].xml", XLSX_CONTENT_TYPES);
+  zip.addFile("_rels/.rels", XLSX_RELS_ROOT);
+  zip.addFile("xl/workbook.xml", xlsxWorkbookXml());
+  zip.addFile("xl/_rels/workbook.xml.rels", XLSX_WORKBOOK_RELS);
+  zip.addFile("xl/styles.xml", xlsxStyles(corHex));
+  zip.addFile("xl/worksheets/sheet1.xml", xlsxBuildDashboardSheet(p, dd));
+  zip.addFile("xl/worksheets/_rels/sheet1.xml.rels", XLSX_SHEET1_RELS);
+  zip.addFile("xl/worksheets/sheet2.xml", xlsxBuildDadosSheet(dd));
+  zip.addFile("xl/drawings/drawing1.xml", xlsxDrawingXml(dd.categorias.length));
+  zip.addFile("xl/drawings/_rels/drawing1.xml.rels", XLSX_DRAWING_RELS);
+  zip.addFile("xl/charts/chart1.xml", xlsxBarChartXml(dd.unidade, corHex, formatoCode));
+  zip.addFile("xl/charts/chart2.xml", xlsxPieChartXml(dd.categorias.length));
+  return zip.build();
+}
+
+function exportarDashboardExcel(portalId) {
+  const p = PORTAIS.find(x => x.id === portalId);
+  const dd = DASH_DATA[portalId];
+  if (!p || !dd) return;
+  const bytes = xlsxBuildWorkbookBytes(p, dd);
+  const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `depaf_dashboard_${portalId}.xlsx`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// =====================================================================
+// 6. EXPORTADOR POWER BI — base tidy (formato longo) + tema + guia, num .zip
+//    Exporta a BASE INTEIRA (todos os portais), não só o portal aberto:
+//    a ideia é carregar 1 modelo no Power BI e fatiar por portal, como o hub faz na web.
+// =====================================================================
+function pbiNum(v) { return String(v).replace(".", ","); }          // decimal BR
+function csvLinha(campos) {
+  return campos.map(c => {
+    const s = String(c);
+    return /[;"\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }).join(";");
+}
+const BOM = "\uFEFF";
+
+function pbiFatoEvolucao() {
+  const linhas = [csvLinha(["portal", "portal_rotulo", "serie", "mes_num", "mes", "valor", "unidade"])];
+  PORTAIS.forEach(p => {
+    const dd = DASH_DATA[p.id]; if (!dd) return;
+    ["Todas", ...dd.categorias.map(c => c.label)].forEach(serie => {
+      const vals = xlsxSerieCategoria(dd, serie === "Todas" ? null : serie);
+      vals.forEach((v, m) => linhas.push(csvLinha([p.id, p.label, serie, m + 1, MESES[m], pbiNum(v), dd.unidade])));
+    });
+  });
+  return BOM + linhas.join("\r\n");
+}
+function pbiFatoComposicao() {
+  const linhas = [csvLinha(["portal", "portal_rotulo", "categoria", "valor", "unidade", "pct_do_total"])];
+  PORTAIS.forEach(p => {
+    const dd = DASH_DATA[p.id]; if (!dd) return;
+    const total = dd.categorias.reduce((a, c) => a + c.valor, 0) || 1;
+    dd.categorias.forEach(c => linhas.push(csvLinha([p.id, p.label, c.label, pbiNum(c.valor), dd.unidade, pbiNum(Math.round(c.valor / total * 1000) / 10)])));
+  });
+  return BOM + linhas.join("\r\n");
+}
+function pbiDimPortal() {
+  const linhas = [csvLinha(["portal", "rotulo", "unidade", "cor_hex", "artigos"])];
+  PORTAIS.forEach(p => {
+    const dd = DASH_DATA[p.id];
+    linhas.push(csvLinha([p.id, p.label, dd ? dd.unidade : "", "#" + xlsxCorHex(p.cor), (p.artigos || []).join(" ")]));
+  });
+  return BOM + linhas.join("\r\n");
+}
+function pbiTemaJson() {
+  return JSON.stringify({
+    name: "DEPAF · PCBA",
+    dataColors: ["#14507A", "#E3A424", "#C0492B", "#3D7A50", "#C9A96E", "#7A2E3F"],
+    background: "#F2ECDB",
+    foreground: "#171410",
+    tableAccent: "#14507A",
+    good: "#3D7A50", neutral: "#C9A96E", bad: "#C0492B",
+    visualStyles: {
+      "*": {
+        "*": {
+          background: [{ show: true, color: { solid: { color: "#FBF7EC" } } }],
+          border: [{ show: true, color: { solid: { color: "#171410" } }, radius: 0 }],
+          title: [{ fontColor: { solid: { color: "#171410" } }, fontFamily: "DIN", fontSize: 13, alignment: "left" }],
+          labels: [{ fontFamily: "Consolas", color: { solid: { color: "#171410" } } }]
+        }
+      }
+    }
+  }, null, 2);
+}
+function pbiLeiaMe() {
+  return [
+    "DEPAF · PCBA — PACOTE POWER BI",
+    "==============================",
+    "",
+    "ATENÇÃO: isto NÃO é um dashboard pronto (.pbix). Uma página web não consegue",
+    "gerar um arquivo .pbix/.pbit que abra sozinho — o modelo do Power BI é um formato",
+    "fechado e compactado da Microsoft. O que vai aqui é o essencial pra você montar o",
+    "MESMO painel em ~5 minutos: os dados já no formato certo + o tema com as cores.",
+    "Se você só quer um painel que abre na hora, use o botão EXPORTAR PARA EXCEL.",
+    "",
+    "Arquivos:",
+    "  fato_evolucao.csv     — série mensal por portal e por série (Todas + cada categoria). Formato longo.",
+    "  fato_composicao.csv   — composição por categoria (snapshot), com % do total.",
+    "  dim_portal.csv        — dimensão dos 8 portais (rótulo, unidade, cor, artigos).",
+    "  tema_depaf_powerbi.json — tema visual (paleta terrosa PCBA, fundo papel, borda carvão).",
+    "",
+    "Formato dos CSV: separador ';' e decimal ',' (padrão pt-BR), UTF-8 com BOM.",
+    "",
+    "IMPORTAR",
+    "  1. Power BI Desktop > Página Inicial > Obter Dados > Texto/CSV.",
+    "  2. Selecione cada CSV. Se pedir, confirme separador Ponto e vírgula e Localidade Português (Brasil).",
+    "  3. Carregar as 3 tabelas.",
+    "",
+    "MODELAR (aba Modelo)",
+    "  dim_portal[portal]  1 --- *  fato_evolucao[portal]",
+    "  dim_portal[portal]  1 --- *  fato_composicao[portal]",
+    "  Use dim_portal como tabela de filtro (segmentações) para os dois fatos ao mesmo tempo.",
+    "",
+    "APLICAR O TEMA",
+    "  Exibir > Temas > Procurar temas > tema_depaf_powerbi.json.",
+    "  (Opcional: instale as fontes IBM Plex Sans/Mono e Big Shoulders no Windows e troque",
+    "   as fontes dos visuais para ficar idêntico à versão web.)",
+    "",
+    "O QUE SUBSTITUI CADA INTERAÇÃO DA WEB",
+    "  Filtro de período / categoria .......... Segmentação de dados (slicer) em portal e serie.",
+    "  Clicar a categoria pra comparar ........ Filtro cruzado entre visuais (nativo) + seleção na legenda.",
+    "  Abrir a caixa preta (tooltip do dado) .. Dica de ferramenta personalizada (página de tooltip).",
+    "  Entrar na tela do setor (hub) .......... Página de drill-through por portal.",
+    "  Ordenar a tabela ....................... Ordenar por coluna na matriz/tabela.",
+    "  Alternar barras/linha/rosca ............ Visuais separados ou botão de indicador (bookmarks).",
+    "",
+    "SUGESTÃO DE PÁGINA",
+    "  - 3 cartões (Último mês / Acumulado 12m / Categoria líder) sobre fato_evolucao.",
+    "  - 1 gráfico de colunas: eixo mes, valor, com segmentação de serie.",
+    "  - 1 rosca OU barras: fato_composicao por categoria (use a paleta do tema).",
+    "  - 1 matriz: categoria x valor x % do total.",
+    "  - Segmentações: portal (obrigatória) e serie.",
+    "",
+    "OBSERVAÇÃO",
+    "  Dados marcados EXEMPLO no portal são fictícios — substituir pela base real.",
+    "  As séries mensais por categoria são derivadas por proporção (só para dar forma ao gráfico),",
+    "  não são medição real por categoria mês a mês."
+  ].join("\r\n");
+}
+function exportarPowerBI() {
+  const zip = new ZipBuilder();
+  zip.addFile("fato_evolucao.csv", pbiFatoEvolucao());
+  zip.addFile("fato_composicao.csv", pbiFatoComposicao());
+  zip.addFile("dim_portal.csv", pbiDimPortal());
+  zip.addFile("tema_depaf_powerbi.json", pbiTemaJson());
+  zip.addFile("LEIA-ME.txt", pbiLeiaMe());
+  const bytes = zip.build();
+  const blob = new Blob([bytes], { type: "application/zip" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "depaf_powerbi.zip";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
