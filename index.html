@@ -200,7 +200,10 @@ body{background:var(--paper);color:var(--carvao);font-family:'IBM Plex Sans',san
 
 .dash-chart-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .dash-chart-head h4{margin-bottom:0}
-.dash-toggle{display:flex;border:1.5px solid var(--carvao)}
+.dash-toggle{display:flex;flex-wrap:wrap;border:1.5px solid var(--carvao)}
+.dash-chart-hint{font-family:'IBM Plex Mono',monospace;font-size:10.5px;line-height:1.55;color:#6b7280;margin:0 0 12px;padding:8px 10px;background:var(--paper);border-left:3px solid var(--tela-color,var(--carvao))}
+.dash-chart-hint b{color:var(--carvao)}
+.dash-chart-hint i{font-style:normal;color:var(--carvao);opacity:.75}
 .dash-toggle-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.04em;background:var(--paper);color:var(--carvao);border:none;padding:5px 9px;cursor:pointer}
 .dash-toggle-btn+.dash-toggle-btn{border-left:1.5px solid var(--carvao)}
 .dash-toggle-btn.active{background:var(--carvao);color:var(--paper)}
@@ -470,6 +473,96 @@ function donutChartSVG(categorias, selectedLabel) {
   });
 
   return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${cols}${rows}${cells}</svg>`;
+}
+
+function simpleBarChartSVG(pontos, cor) {
+  const w = 520, h = 200, padL = 34, padR = 14, padT = 10, baseY = h - 34;
+  const n = pontos.length || 1;
+  const max = Math.max(...pontos.map(p => p.valor), 1);
+  const plotH = baseY - padT;
+  const bw = (w - padL - padR) / n;
+  const barW = Math.min(bw * 0.56, 40);
+  let grade = "", eixoY = "", barras = "", labels = "";
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = baseY - plotH * f;
+    grade += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${w - padR}" y2="${y.toFixed(1)}" stroke="var(--paper-line)" stroke-width="1" stroke-dasharray="${f === 0 ? "0" : "2 4"}" />`;
+    eixoY += `<text x="${(padL - 6).toFixed(1)}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-family="monospace" font-size="8" fill="var(--carvao)" fill-opacity="0.5">${Math.round(max * f)}</text>`;
+  });
+  pontos.forEach((p, i) => {
+    const cxB = padL + bw * i + bw / 2;
+    const alt = plotH * (p.valor / max);
+    const y = baseY - alt;
+    const ultimo = i === n - 1;
+    barras += `<rect class="barra" x="${(cxB - barW / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${alt.toFixed(1)}" fill="${ultimo ? cor : corGlow(cor)}" stroke="${cor}" stroke-width="1.4"><title>${p.label}: ${p.valor}</title></rect>`;
+    labels += `<text x="${cxB.toFixed(1)}" y="${baseY + 16}" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--carvao)" fill-opacity="${ultimo ? 1 : 0.6}" font-weight="${ultimo ? 700 : 400}">${p.label}</text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${grade}${eixoY}${barras}${labels}</svg>`;
+}
+
+function simpleLineChartSVG(pontos, cor) {
+  const w = 520, h = 200, padL = 34, padR = 14, padT = 10, baseY = h - 34;
+  const n = pontos.length;
+  const max = Math.max(...pontos.map(p => p.valor), 1);
+  const plotH = baseY - padT;
+  const stepX = (w - padL - padR) / (n - 1 || 1);
+  let grade = "", eixoY = "";
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = baseY - plotH * f;
+    grade += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${w - padR}" y2="${y.toFixed(1)}" stroke="var(--paper-line)" stroke-width="1" stroke-dasharray="${f === 0 ? "0" : "2 4"}" />`;
+    eixoY += `<text x="${(padL - 6).toFixed(1)}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-family="monospace" font-size="8" fill="var(--carvao)" fill-opacity="0.5">${Math.round(max * f)}</text>`;
+  });
+  const pts = pontos.map((p, i) => [padL + i * stepX, baseY - plotH * (p.valor / max)]);
+  const linha = "M " + pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(" L ");
+  const area = linha + ` L ${pts[pts.length - 1][0].toFixed(1)} ${baseY} L ${pts[0][0].toFixed(1)} ${baseY} Z`;
+  let nodos = "", labels = "";
+  pontos.forEach((p, i) => {
+    const [x, y] = pts[i];
+    const ultimo = i === n - 1;
+    nodos += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${ultimo ? 5 : 3.4}" fill="${ultimo ? cor : "var(--surface)"}" stroke="${cor}" stroke-width="1.6"><title>${p.label}: ${p.valor}</title></circle>`;
+    labels += `<text x="${x.toFixed(1)}" y="${baseY + 16}" text-anchor="middle" font-family="monospace" font-size="9" fill="var(--carvao)" fill-opacity="${ultimo ? 1 : 0.55}" font-weight="${ultimo ? 700 : 400}">${p.label}</text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${grade}${eixoY}<path d="${area}" fill="${corGlow(cor)}" stroke="none" /><path d="${linha}" fill="none" stroke="${cor}" stroke-width="2.2" stroke-linejoin="round" />${nodos}${labels}</svg>`;
+}
+
+function pieChartSVG(categorias, selectedLabel) {
+  const cx = 100, cy = 100, rOut = 88, rIn = 48, total = categorias.reduce((a, c) => a + c.valor, 0) || 1;
+  const toXY = (a, r) => { const rad = a * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; };
+  let ang = -90, fatias = "";
+  categorias.forEach((c, i) => {
+    const cor = corCategoria(i);
+    const a0 = ang, frac = c.valor / total, a1 = ang + frac * 360; ang = a1;
+    const [x0o, y0o] = toXY(a0, rOut), [x1o, y1o] = toXY(a1, rOut);
+    const [x1i, y1i] = toXY(a1, rIn), [x0i, y0i] = toXY(a0, rIn);
+    const large = (a1 - a0) > 180 ? 1 : 0;
+    const dim = selectedLabel && selectedLabel !== c.label;
+    const d = `M ${x0o.toFixed(1)} ${y0o.toFixed(1)} A ${rOut} ${rOut} 0 ${large} 1 ${x1o.toFixed(1)} ${y1o.toFixed(1)} L ${x1i.toFixed(1)} ${y1i.toFixed(1)} A ${rIn} ${rIn} 0 ${large} 0 ${x0i.toFixed(1)} ${y0i.toFixed(1)} Z`;
+    fatias += `<path class="donut-fatia" data-cat="${c.label}" d="${d}" fill="${cor}" opacity="${dim ? 0.28 : 1}" style="cursor:pointer"><title>${c.label}: ${c.valor} (${(frac * 100).toFixed(1)}%)</title></path>`;
+  });
+  const legenda = categorias.map((c, i) => {
+    const pct = ((c.valor / total) * 100).toFixed(1);
+    return `<button class="donut-leg" data-cat="${c.label}" style="cursor:pointer"><span class="sw" style="background:${corCategoria(i)}"></span><span class="lg-nome">${c.label}</span><span class="lg-pct">${pct}%</span></button>`;
+  }).join("");
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">${fatias}</svg><div class="donut-legenda">${legenda}</div>`;
+}
+
+function barRankingChartSVG(categorias, selectedLabel) {
+  const w = 300, rowH = 26, padL = 108, padR = 44, padT = 10;
+  const h = padT + categorias.length * rowH + 6;
+  const max = Math.max(...categorias.map(c => c.valor), 1);
+  let linhas = "";
+  categorias.forEach((c, i) => {
+    const cor = corCategoria(i);
+    const y = padT + i * rowH;
+    const larg = (w - padL - padR) * (c.valor / max);
+    const dim = selectedLabel && selectedLabel !== c.label;
+    const nomeCurto = c.label.length > 15 ? c.label.slice(0, 14) + "…" : c.label;
+    linhas += `<g class="rank-bar" data-cat="${c.label}" style="cursor:pointer" opacity="${dim ? 0.35 : 1}">
+      <text x="${padL - 8}" y="${(y + rowH / 2 + 3).toFixed(1)}" text-anchor="end" font-family="monospace" font-size="9" font-weight="${selectedLabel === c.label ? 700 : 400}" fill="var(--carvao)">${nomeCurto}</text>
+      <rect class="barra" x="${padL}" y="${(y + 4).toFixed(1)}" width="${larg.toFixed(1)}" height="${rowH - 8}" fill="${cor}"><title>${c.label}: ${c.valor}</title></rect>
+      <text x="${(padL + larg + 6).toFixed(1)}" y="${(y + rowH / 2 + 3).toFixed(1)}" font-family="monospace" font-size="9" fill="var(--carvao)">${c.valor}</text>
+    </g>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${linhas}</svg>`;
 }
 
 // =====================================================================
@@ -900,6 +993,17 @@ window.addEventListener("resize", () => {
 const telaInicio = document.getElementById("tela-inicio");
 const telaConteudo = document.getElementById("tela-conteudo");
 const voltarBtn = document.getElementById("voltar-btn");
+const CHART_INFO = {
+  bar:     { nome: "Barras",             indicado: "comparar valores absolutos entre períodos.", mostra: "quanto cada período vale e a diferença de tamanho entre eles.", eixo: "vertical = valor · horizontal = período. Compare a altura das barras." },
+  line:    { nome: "Linha",              indicado: "acompanhar tendência e variação contínua no tempo.", mostra: "se a série está subindo, caindo ou estável.", eixo: "vertical = valor · horizontal = tempo. Observe a inclinação entre pontos." },
+  radar:   { nome: "Radar polar",        indicado: "ver o formato geral da série e picos fora do padrão de uma vez.", mostra: "a amplitude de cada período em torno de um centro comum.", eixo: "cada raio é um período; a distância do centro é o valor — não há eixo linear único." },
+  fluxo:   { nome: "Fluxo (arcos)",      indicado: "destacar a variação (delta) de um período pro seguinte.", mostra: "se a mudança foi grande, pequena, positiva (verde) ou negativa (terracota).", eixo: "altura do arco = tamanho da variação; cor = sentido da variação." },
+  donut:   { nome: "Rosca / Pizza",      indicado: "ver a participação percentual de cada categoria no total.", mostra: "o peso relativo de cada categoria dentro do todo.", eixo: "sem eixo — o ângulo/área da fatia é proporcional ao % do total." },
+  ranking: { nome: "Ranking (barras)",   indicado: "comparar e ordenar categorias por valor.", mostra: "quem é maior ou menor, em ordem.", eixo: "horizontal = valor; cada linha é uma categoria." },
+  matriz:  { nome: "Matriz de correlação", indicado: "comparar todas as categorias entre si de uma vez só.", mostra: "o quanto duas categorias têm valores parecidos (célula mais escura = mais parecidas).", eixo: "linhas e colunas são as mesmas categorias; a célula no cruzamento é a similaridade (%)." },
+  rede:    { nome: "Rede (cordas)",      indicado: "ver categorias vizinhas como uma cadeia conectada.", mostra: "o peso combinado entre uma categoria e a próxima do ciclo.", eixo: "sem eixo — a espessura da corda entre dois pontos indica o peso combinado dos dois." }
+};
+
 let dashState = { tipoEvolucao: "bar", tipoComp: "donut" };
 
 function abrirTela(id) {
@@ -984,8 +1088,11 @@ function abrirTela(id) {
             <div class="dash-toggle" id="toggle-tipo-evolucao">
               <button class="dash-toggle-btn active" data-val="bar">BARRAS</button>
               <button class="dash-toggle-btn" data-val="line">LINHA</button>
+              <button class="dash-toggle-btn" data-val="radar">RADAR</button>
+              <button class="dash-toggle-btn" data-val="fluxo">FLUXO</button>
             </div>
           </div>
+          <p class="dash-chart-hint" id="hint-evolucao"></p>
           <div id="dash-chart-linha"></div>
         </div>
         <div class="dash-chart-box">
@@ -994,8 +1101,11 @@ function abrirTela(id) {
             <div class="dash-toggle" id="toggle-tipo-comp">
               <button class="dash-toggle-btn active" data-val="donut">ROSCA</button>
               <button class="dash-toggle-btn" data-val="ranking">RANKING</button>
+              <button class="dash-toggle-btn" data-val="matriz">MATRIZ</button>
+              <button class="dash-toggle-btn" data-val="rede">REDE</button>
             </div>
           </div>
+          <p class="dash-chart-hint" id="hint-comp"></p>
           <div id="dash-chart-donut"></div>
         </div>
       </div>
@@ -1091,15 +1201,17 @@ function atualizarDashboard(portalId, periodo, categoriaFiltro) {
   if(categoriaSelecionada) chipsHTML += `<span class="filter-chip">${categoriaSelecionada} <button onclick="document.getElementById('dash-filtro-categoria').value='todas';atualizarDashboard('${portalId}',document.getElementById('dash-filtro-periodo').value,'todas')">✕</button></span>`;
   chips.innerHTML = chipsHTML;
 
+  const RENDER_EVOLUCAO = { bar: simpleBarChartSVG, line: simpleLineChartSVG, radar: barChartSVG, fluxo: lineChartSVG };
   const elLinha = document.getElementById("dash-chart-linha");
-  elLinha.innerHTML = dashState.tipoEvolucao === "line"
-    ? lineChartSVG(pontos, corEvolucao)
-    : barChartSVG(pontos, corEvolucao);
+  elLinha.innerHTML = (RENDER_EVOLUCAO[dashState.tipoEvolucao] || simpleBarChartSVG)(pontos, corEvolucao);
+  const infoE = CHART_INFO[dashState.tipoEvolucao];
+  document.getElementById("hint-evolucao").innerHTML = `<b>${infoE.nome}:</b> indicado pra ${infoE.indicado} Mostra ${infoE.mostra} <i>Como ler:</i> ${infoE.eixo}`;
 
+  const RENDER_COMP = { donut: pieChartSVG, ranking: barRankingChartSVG, matriz: donutChartSVG, rede: rankingChartSVG };
   const elComp = document.getElementById("dash-chart-donut");
-  elComp.innerHTML = dashState.tipoComp === "ranking"
-    ? rankingChartSVG(dd.categorias, categoriaSelecionada)
-    : donutChartSVG(dd.categorias, categoriaSelecionada);
+  elComp.innerHTML = (RENDER_COMP[dashState.tipoComp] || pieChartSVG)(dd.categorias, categoriaSelecionada);
+  const infoC = CHART_INFO[dashState.tipoComp];
+  document.getElementById("hint-comp").innerHTML = `<b>${infoC.nome}:</b> indicado pra ${infoC.indicado} Mostra ${infoC.mostra} <i>Como ler:</i> ${infoC.eixo}`;
 
   function alternarFiltro(clicado) {
     const selCategoria = document.getElementById("dash-filtro-categoria");
